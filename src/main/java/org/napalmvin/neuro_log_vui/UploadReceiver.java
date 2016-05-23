@@ -10,18 +10,21 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
 
 /**
  *
  * @author LOL
  */
-class UploadReceiver implements Receiver, SucceededListener {
+class UploadReceiver implements Receiver, SucceededListener, FailedListener {
 
     private File file;
     private TextField fileName;
@@ -30,6 +33,8 @@ class UploadReceiver implements Receiver, SucceededListener {
     private final Embedded image;
 
     private  Type type;
+
+   
     
     public static enum Type {
         IMAGE, ATTACHMENT;
@@ -53,8 +58,7 @@ class UploadReceiver implements Receiver, SucceededListener {
         // Create upload stream
         FileOutputStream fos = null; // Stream to write to
         try {
-            // Open the file for writing.
-            file = new File(DEFAULT_IMG_FOLDER + filename);
+            file = new File(type.getFolder() + filename);
             fos = new FileOutputStream(file);
         } catch (final java.io.FileNotFoundException e) {
             new Notification("Could not open file<br/>",
@@ -71,6 +75,11 @@ class UploadReceiver implements Receiver, SucceededListener {
         fileName.setValue(file.getName());
         image.setSource(new FileResource(file));
         image.setVisible(true);
+    }
+    
+     @Override
+    public void uploadFailed(Upload.FailedEvent event) {
+        throw new Error("Some error",event.getReason());
     }
 
 }
