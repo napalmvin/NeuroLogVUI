@@ -49,10 +49,16 @@
             <artifactId>h2</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.metawidget.modules</groupId>
+            <artifactId>metawidget-annotation</artifactId>
+            <version>4.2</version>
+        </dependency>
+<!--        <dependency>
             <groupId>org.napalmvin</groupId>
             <artifactId>NeuroLog</artifactId>
             <version>1.0</version>
-        </dependency>
+            <type>war</type>
+        </dependency>-->
     </dependencies>
 
     <build>
@@ -60,6 +66,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
             </plugin>
         </plugins>
     </build>

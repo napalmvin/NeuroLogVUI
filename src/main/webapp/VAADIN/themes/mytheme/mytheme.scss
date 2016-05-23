@@ -1,0 +1,22 @@
+@import "../valo/valo";
+@mixin mytheme {
+    @include valo;
+    /* An actual theme rule */
+
+
+    /*    .doctorsPicture{
+            height: 200px !important;
+        }*/
+    /*    .v-grid-header{
+            height: 34px !important;
+        }*/
+    .v-grid-body{
+        .v-grid-cell {
+            height: 180px !important;
+        }
+        .gwt-Image {
+            width: auto!important;
+            height: 100%!important;
+        }
+    }
+}
