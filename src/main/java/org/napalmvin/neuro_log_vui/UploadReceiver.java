@@ -25,7 +25,7 @@ import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
  *
  * @author LOL
  */
-class UploadReceiver implements Receiver, SucceededListener, FailedListener,FinishedListener {
+class UploadReceiver implements Receiver, SucceededListener, FailedListener {
 
     private File file;
     private TextField fileName;
@@ -34,12 +34,6 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener,Fini
     private final Embedded image;
 
     private  Type type;
-
-    @Override
-    public void uploadFinished(Upload.FinishedEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
    
     
     public static enum Type {
@@ -85,7 +79,7 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener,Fini
     
      @Override
     public void uploadFailed(Upload.FailedEvent event) {
-        throw new Error("Some error",event.getReason());
+        throw new Error("Error during file upload",event.getReason());
     }
 
 }

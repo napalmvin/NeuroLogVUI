@@ -102,7 +102,6 @@ public class DoctorsUI extends UI {
             addWindow(popupWindow);
 
         });
-
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
             removeWindow(popupWindow);
@@ -135,7 +134,7 @@ public class DoctorsUI extends UI {
     private void initEditorWindow() {
         popupWindow.setContent(editor);
         popupWindow.setModal(true);
-       // popupWindow.setImmediate(true);
+        popupWindow.setImmediate(true);
         popupWindow.setHeight(85, Unit.PERCENTAGE);
     }
 

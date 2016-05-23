@@ -3,6 +3,7 @@ package org.napalmvin.neuro_log_vui;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
@@ -72,13 +73,18 @@ public class DoctorEditor extends Panel {
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public DoctorEditor(DoctorRepository repository) {
         this.repository = repository;
-        photoUrl.setReadOnly(true);
+        initUI();
+        addValidators();
+    }
+
+    private void initUI() {
+       photoUrl.setReadOnly(true);
+        photoUrl.setEnabled(false);
         vl.setSpacing(true);
         vl.setMargin(true);
         actions.setMargin(true);
         setContent(vl);
         upload.setReceiver(receiver);
-        
         upload.addSucceededListener(receiver);
         upload.addFailedListener(receiver);
         
@@ -91,7 +97,14 @@ public class DoctorEditor extends Panel {
         save.addClickListener(e -> repository.save(doctor));
         delete.addClickListener(e -> repository.delete(doctor));
         cancel.addClickListener(e -> editDoctor(doctor));
+        image.setWidth(200, Unit.PIXELS);
         setVisible(false);
+    }
+
+    private void addValidators() {
+        firstName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
+        lastName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
+        photoUrl.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
     }
 
     public interface ChangeHandler {
