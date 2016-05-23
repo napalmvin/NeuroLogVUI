@@ -117,28 +117,31 @@ public class DoctorsUI extends UI {
 
     @SuppressWarnings("all")
     private void initMainUI() {
-        // build layout
-        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-        VerticalLayout mainLayout = new VerticalLayout(actions, grid);
-        setContent(mainLayout);
-
-        actions.setSpacing(true);
-        mainLayout.setMargin(true);
-        mainLayout.setSpacing(true);
-
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(100, Unit.PERCENTAGE);
         grid.setColumns(Doctor.FieldsList.getStringArray());
         Grid.Column photo = grid.getColumn(Doctor.FieldsList.photoUrl.name());
         photo.setRenderer(imgRndrr, converter);
+        
         filter.setInputPrompt("Filter by last name");
+
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        VerticalLayout mainLayout = new VerticalLayout(actions, grid);
+        mainLayout.setHeight(100, Unit.PERCENTAGE);
+        mainLayout.setSizeFull();
+        setContent(mainLayout);
+
+        actions.setSpacing(true);
+        mainLayout.setExpandRatio(grid, 5);
+        mainLayout.setMargin(true);
+        mainLayout.setSpacing(true);
     }
 
     private void initEditorWindow() {
         popupWindow.setContent(editor);
         popupWindow.setModal(true);
         popupWindow.setImmediate(true);
-        popupWindow.setHeight(100, Unit.PERCENTAGE);
+        popupWindow.setHeight(85, Unit.PERCENTAGE);
     }
 
 }

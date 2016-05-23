@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
@@ -34,11 +35,11 @@ public class Application {
     @Autowired
     public CommandLineRunner loadData(DoctorRepository repository) {
         return (args) -> {
-            Path scanImgDir = Paths.get(ImageUploadeReceiver.DEFAULT_IMG_FOLDER);
+            Path scanImgDir = Paths.get(IMAGE.getFolder());
             List<String> imgs = new ArrayList<>();
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(scanImgDir, "*.{jpg}")) {
                 for (Path entry : stream) {
-                    imgs.add(entry.getFileName().toString());
+                    imgs.add("images//"+entry.getFileName().toString());
                 }
             } catch (IOException | DirectoryIteratorException x) {
                 log.error("Whoops", x);

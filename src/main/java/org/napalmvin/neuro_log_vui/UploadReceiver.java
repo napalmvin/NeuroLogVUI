@@ -10,7 +10,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
@@ -22,18 +21,32 @@ import java.io.OutputStream;
  *
  * @author LOL
  */
-class ImageUploadeReceiver implements Receiver, SucceededListener {
+class UploadReceiver implements Receiver, SucceededListener {
 
     private File file;
     private TextField fileName;
-    public static final String DEFAULT_IMG_FOLDER = "E:\\!Sources\\NeuroLogVUI\\target\\classes\\resources\\";
+    private static final String DEFAULT_IMG_FOLDER = "E:\\!Sources\\NeuroLogVUI\\target\\classes\\resources\\images\\";
+    private static final String DEFAULT_ATTACHMENTS_FOLDER = "E:\\!Sources\\NeuroLogVUI\\target\\classes\\resources\\attachments\\";
     private final Embedded image;
 
-    ImageUploadeReceiver(TextField fileName, Embedded image) {
-        this.fileName=fileName;
-        this.image=image;
+    private  Type type;
+    
+    public static enum Type {
+        IMAGE, ATTACHMENT;
+
+        public String getFolder() {
+            if (this.equals(IMAGE)) {
+                return DEFAULT_IMG_FOLDER;
+            }
+            return DEFAULT_ATTACHMENTS_FOLDER;
+        }
     }
-   
+
+    UploadReceiver(TextField fileName, Embedded image, Type type) {
+        this.fileName = fileName;
+        this.image = image;
+        this.type=type;
+    }
 
     public OutputStream receiveUpload(String filename,
             String mimeType) {
@@ -55,7 +68,7 @@ class ImageUploadeReceiver implements Receiver, SucceededListener {
 
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        fileName.setValue(file.getName().toString());
+        fileName.setValue(file.getName());
         image.setSource(new FileResource(file));
         image.setVisible(true);
     }

@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
@@ -20,9 +18,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import org.napalmvin.neuro_log_vui.UploadReceiver.Type;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
@@ -58,7 +56,7 @@ public class DoctorEditor extends Panel {
     TextField photoUrl = new TextField("File name");
     Embedded image = new Embedded("Image");
 
-    ImageUploadeReceiver receiver = new ImageUploadeReceiver(photoUrl, image);
+    UploadReceiver receiver = new UploadReceiver(photoUrl, image,Type.IMAGE);
 
     Upload upload = new Upload("Doctor photo", receiver);
     /* Action buttons */
@@ -92,7 +90,6 @@ public class DoctorEditor extends Panel {
     }
 
     public interface ChangeHandler {
-
         void onChange();
     }
 
@@ -102,10 +99,13 @@ public class DoctorEditor extends Panel {
             // Find fresh entity for editing
             doctor = repository.findOne(dr.getId());
             image.setSource(new ExternalResource(dr.getPhotoUrl()));
+            image.setVisible(true);
 
         } else {
             doctor = dr;
             image.setSource(null);
+            image.setVisible(false);
+
         }
         cancel.setVisible(persisted);
 
