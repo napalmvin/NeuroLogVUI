@@ -58,7 +58,8 @@ public class DoctorEditor extends Panel {
 
     UploadReceiver receiver = new UploadReceiver(photoUrl, image,Type.IMAGE);
 
-    Upload upload = new Upload("Doctor photo", receiver);
+    Upload upload = new Upload();
+    
     /* Action buttons */
     Button save = new Button("Save", FontAwesome.SAVE);
     Button cancel = new Button("Cancel");
@@ -76,7 +77,11 @@ public class DoctorEditor extends Panel {
         vl.setMargin(true);
         actions.setMargin(true);
         setContent(vl);
-
+        upload.setReceiver(receiver);
+        
+        upload.addSucceededListener(receiver);
+        upload.addFailedListener(receiver);
+        
         // Configure and style components
         actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -90,6 +95,7 @@ public class DoctorEditor extends Panel {
     }
 
     public interface ChangeHandler {
+        
         void onChange();
     }
 

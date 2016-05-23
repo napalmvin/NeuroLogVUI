@@ -5,12 +5,8 @@ import org.springframework.util.StringUtils;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.event.SelectionEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
@@ -22,7 +18,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.Date;
-import java.util.Locale;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
@@ -140,7 +135,7 @@ public class DoctorsUI extends UI {
     private void initEditorWindow() {
         popupWindow.setContent(editor);
         popupWindow.setModal(true);
-        popupWindow.setImmediate(true);
+       // popupWindow.setImmediate(true);
         popupWindow.setHeight(85, Unit.PERCENTAGE);
     }
 

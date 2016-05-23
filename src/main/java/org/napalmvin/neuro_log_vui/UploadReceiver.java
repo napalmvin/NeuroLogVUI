@@ -12,6 +12,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedListener;
+import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
@@ -24,7 +25,7 @@ import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
  *
  * @author LOL
  */
-class UploadReceiver implements Receiver, SucceededListener, FailedListener {
+class UploadReceiver implements Receiver, SucceededListener, FailedListener,FinishedListener {
 
     private File file;
     private TextField fileName;
@@ -33,6 +34,11 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
     private final Embedded image;
 
     private  Type type;
+
+    @Override
+    public void uploadFinished(Upload.FinishedEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
    
     
