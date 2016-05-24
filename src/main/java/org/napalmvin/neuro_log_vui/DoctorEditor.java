@@ -78,8 +78,7 @@ public class DoctorEditor extends Panel {
     }
 
     private void initUI() {
-       photoUrl.setReadOnly(true);
-        photoUrl.setEnabled(false);
+        photoUrl.setVisible(false);
         vl.setSpacing(true);
         vl.setMargin(true);
         actions.setMargin(true);

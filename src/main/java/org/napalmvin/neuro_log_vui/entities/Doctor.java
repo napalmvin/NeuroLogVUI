@@ -6,18 +6,20 @@
 package org.napalmvin.neuro_log_vui.entities;
 
 import java.util.Date;
+import org.napalmvin.neuro_log_vui.data.RaceEnum;
+import org.napalmvin.neuro_log_vui.data.GenderEnum;
+
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Lob;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import org.metawidget.inspector.annotation.UiHidden;
 import org.metawidget.inspector.annotation.UiRequired;
-import org.napalmvin.neuro_log_vui.data.RaceEnum;
-import org.napalmvin.neuro_log_vui.data.GenderEnum;
 
 @Entity
 @Table(name = "DOCTORS")
@@ -36,12 +38,12 @@ public class Doctor {
         public static String[] getStringArray() {
             FieldsList[] values = FieldsList.values();
             String[] returnVal = new String[values.length];
-            for (int i=0;i<values.length;i++) {
-                returnVal[i]=values[i].toString();
+            for (int i = 0; i < values.length; i++) {
+                returnVal[i] = values[i].toString();
             }
             return returnVal;
         }
-        
+
     }
 
     @Id
@@ -51,9 +53,11 @@ public class Doctor {
     private String lastName;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
+    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
+    @Enumerated(EnumType.STRING)
     private RaceEnum race;
-    
+
     private String photoUrl;
     private String qualification;
 

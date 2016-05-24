@@ -58,7 +58,7 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
         // Create upload stream
         FileOutputStream fos = null; // Stream to write to
         try {
-            file = new File(type.getFolder() + filename);
+            file = new File(type.getFolder() +System.currentTimeMillis()+"-"+ filename);
             fos = new FileOutputStream(file);
         } catch (final java.io.FileNotFoundException e) {
             new Notification("Could not open file<br/>",
@@ -72,7 +72,7 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
 
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        fileName.setValue(file.getName());
+        fileName.setValue(file.getParentFile().getName()+"//"+file.getName());
         image.setSource(new FileResource(file));
         image.setVisible(true);
     }
