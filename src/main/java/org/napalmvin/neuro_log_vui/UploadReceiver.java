@@ -5,6 +5,7 @@
  */
 package org.napalmvin.neuro_log_vui;
 
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Embedded;
@@ -18,8 +19,17 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.napalmvin.neuro_log_vui.Constants.Type;
+import org.napalmvin.neuro_log_vui.data.ImageRepository;
+import org.napalmvin.neuro_log_vui.entities.Image;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -29,28 +39,17 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
 
     private File file;
     private TextField fileName;
-    private static final String DEFAULT_IMG_FOLDER = "E:\\!Sources\\NeuroLogVUI\\target\\classes\\resources\\images\\";
-    private static final String DEFAULT_ATTACHMENTS_FOLDER = "E:\\!Sources\\NeuroLogVUI\\target\\classes\\resources\\attachments\\";
+
     private final Embedded image;
+    private ImageRepository imageRepository;
 
-    private  Type type;
-   
-    
-    public static enum Type {
-        IMAGE, ATTACHMENT;
+    private Type type;
 
-        public String getFolder() {
-            if (this.equals(IMAGE)) {
-                return DEFAULT_IMG_FOLDER;
-            }
-            return DEFAULT_ATTACHMENTS_FOLDER;
-        }
-    }
-
-    UploadReceiver(TextField fileName, Embedded image, Type type) {
+    public UploadReceiver(TextField fileName, Embedded image, ImageRepository imageRepository, Type type) {
         this.fileName = fileName;
         this.image = image;
-        this.type=type;
+        this.imageRepository = imageRepository;
+        this.type = type;
     }
 
     public OutputStream receiveUpload(String filename,
@@ -58,7 +57,7 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
         // Create upload stream
         FileOutputStream fos = null; // Stream to write to
         try {
-            file = new File(type.getFolder() +System.currentTimeMillis()+"-"+ filename);
+            file = new File(type.getFullFolder() + System.currentTimeMillis() + "-" + filename);
             fos = new FileOutputStream(file);
         } catch (final java.io.FileNotFoundException e) {
             new Notification("Could not open file<br/>",
@@ -72,14 +71,23 @@ class UploadReceiver implements Receiver, SucceededListener, FailedListener {
 
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        fileName.setValue(file.getParentFile().getName()+"//"+file.getName());
-        image.setSource(new FileResource(file));
+        try {
+            Path path = Paths.get(file.getPath());
+            byte[] data = Files.readAllBytes(path);
+            Image img = new Image(file.getName(), data);
+            imageRepository.save(img);
+        } catch (IOException ex) {
+            Logger.getLogger(UploadReceiver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        fileName.setValue(file.getName());
+        image.setSource(new ExternalResource(type.getParentFolder()+file));
         image.setVisible(true);
     }
-    
-     @Override
+
+    @Override
     public void uploadFailed(Upload.FailedEvent event) {
-        throw new Error("Error during file upload",event.getReason());
+        throw new Error("Error during file upload", event.getReason());
     }
 
 }

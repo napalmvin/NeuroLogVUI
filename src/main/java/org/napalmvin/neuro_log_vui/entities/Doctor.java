@@ -32,7 +32,7 @@ public class Doctor {
         birthDate,
         gender,
         race,
-        photoUrl,
+        photoName,
         qualification;
 
         public static String[] getStringArray() {
@@ -49,28 +49,35 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
     private String firstName;
+    
     private String lastName;
+    
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
+    
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
+    
     @Enumerated(EnumType.STRING)
     private RaceEnum race;
 
-    private String photoUrl;
+//    @OneToOne(targetEntity = Image.class)
+    private String photoName;
+    
     private String qualification;
 
     protected Doctor() {
     }
 
-    public Doctor(String first_name, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photo, String qualification) {
+    public Doctor(String first_name, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photoName, String qualification) {
         this.firstName = first_name;
         this.lastName = last_name;
         this.birthDate = birth_date;
         this.gender = sex;
         this.race = race;
-        this.photoUrl = photo;
+        this.photoName = photoName;
         this.qualification = qualification;
     }
 
@@ -99,8 +106,8 @@ public class Doctor {
         return race;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getPhotoName() {
+        return photoName;
     }
 
     public String getQualification() {
@@ -166,8 +173,8 @@ public class Doctor {
     }
 
     @UiRequired
-    public void setPhotoUrl(String photo) {
-        this.photoUrl = photo;
+    public void setPhotoNamel(String photo) {
+        this.photoName = photo;
     }
 
     @UiRequired

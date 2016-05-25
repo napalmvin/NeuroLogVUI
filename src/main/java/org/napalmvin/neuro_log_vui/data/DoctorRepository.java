@@ -1,4 +1,4 @@
-package org.napalmvin.neuro_log_vui;
+package org.napalmvin.neuro_log_vui.data;
 
 import java.util.List;
 import org.napalmvin.neuro_log_vui.entities.Doctor;

@@ -1,5 +1,6 @@
 package org.napalmvin.neuro_log_vui;
 
+import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -21,9 +22,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
-import org.napalmvin.neuro_log_vui.UploadReceiver.Type;
+import org.napalmvin.neuro_log_vui.Constants.Type;
+import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
+import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 
 /**
@@ -39,7 +42,7 @@ import org.napalmvin.neuro_log_vui.entities.Doctor;
 @UIScope
 public class DoctorEditor extends Panel {
 
-    private final DoctorRepository repository;
+    private final DoctorRepository doctorRepo;
 
     /**
      * The currently edited customer
@@ -54,10 +57,10 @@ public class DoctorEditor extends Panel {
     TextField qualification = new TextField("Qualificaton");
     ComboBox gender = new ComboBox("Sex", Arrays.asList(GenderEnum.values()));
     ComboBox race = new ComboBox("Race", Arrays.asList(RaceEnum.values()));
-    TextField photoUrl = new TextField("File name");
+    TextField photoName = new TextField("File name");
     Embedded image = new Embedded("Image");
 
-    UploadReceiver receiver = new UploadReceiver(photoUrl, image,Type.IMAGE);
+    UploadReceiver receiver ;
 
     Upload upload = new Upload();
     
@@ -67,22 +70,24 @@ public class DoctorEditor extends Panel {
     Button delete = new Button("Delete", FontAwesome.TRASH_O);
 
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
-    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, photoUrl, image, upload, actions);
+    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, photoName, image, upload, actions);
+    private final ImageRepository imageRepo;
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public DoctorEditor(DoctorRepository repository) {
-        this.repository = repository;
+    public DoctorEditor(DoctorRepository doctorRepo,ImageRepository imageRepo) {
+        this.doctorRepo = doctorRepo;
+         this.imageRepo = imageRepo;
         initUI();
         addValidators();
     }
 
     private void initUI() {
-        photoUrl.setVisible(false);
         vl.setSpacing(true);
         vl.setMargin(true);
         actions.setMargin(true);
         setContent(vl);
+        receiver=new UploadReceiver(photoName, image, imageRepo, IMAGE);
         upload.setReceiver(receiver);
         upload.addSucceededListener(receiver);
         upload.addFailedListener(receiver);
@@ -93,8 +98,8 @@ public class DoctorEditor extends Panel {
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         // wire action buttons to save, delete and reset
-        save.addClickListener(e -> repository.save(doctor));
-        delete.addClickListener(e -> repository.delete(doctor));
+        save.addClickListener(e -> doctorRepo.save(doctor));
+        delete.addClickListener(e -> doctorRepo.delete(doctor));
         cancel.addClickListener(e -> editDoctor(doctor));
         image.setWidth(200, Unit.PIXELS);
         setVisible(false);
@@ -103,7 +108,7 @@ public class DoctorEditor extends Panel {
     private void addValidators() {
         firstName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
         lastName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
-        photoUrl.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
+        photoName.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
     }
 
     public interface ChangeHandler {
@@ -115,8 +120,8 @@ public class DoctorEditor extends Panel {
         final boolean persisted = dr.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
-            doctor = repository.findOne(dr.getId());
-            image.setSource(new ExternalResource(dr.getPhotoUrl()));
+            doctor = doctorRepo.findOne(dr.getId());
+            image.setSource(new ExternalResource(IMAGE.getParentFolder()+dr.getPhotoName()));
             image.setVisible(true);
 
         } else {

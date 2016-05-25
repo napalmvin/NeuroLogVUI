@@ -1,5 +1,6 @@
 package org.napalmvin.neuro_log_vui;
 
+import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
@@ -7,10 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import static org.napalmvin.neuro_log_vui.UploadReceiver.Type.IMAGE;
+import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
@@ -40,11 +40,11 @@ public class Application {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-                Path scanImgDir = Paths.get(IMAGE.getFolder());
+                Path scanImgDir = Paths.get(IMAGE.getFullFolder());
                 List<String> imgs = new ArrayList<>();
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(scanImgDir, "*.{jpg}")) {
                     for (Path entry : stream) {
-                        imgs.add("images//" + entry.getFileName().toString());
+                        imgs.add(entry.getFileName().toString());
                     }
                 } catch (IOException | DirectoryIteratorException x) {
                     log.error("Whoops", x);
@@ -58,7 +58,7 @@ public class Application {
                 repository.save(new Doctor("Kim", "Bauer",(new GregorianCalendar(1975, 12, 1)).getTime(),
                         GenderEnum.FEMALE, RaceEnum.Caucasian, imgs.get(2), "Good docctor,MD."));
                 repository.save(new Doctor("David", "Palmer", (new GregorianCalendar(1985, 12, 1)).getTime(),
-                        GenderEnum.MALE, RaceEnum.Caucasian, imgs.get(3), "Good docctor,MD."));
+                        GenderEnum.MALE, RaceEnum.Caucasian, imgs.get(1), "Good docctor,MD."));
                 repository.save(new Doctor("Michelle", "Dessler", (new GregorianCalendar(1968, 12, 1)).getTime(),
                         GenderEnum.FEMALE, RaceEnum.Caucasian, imgs.get(0), "Good docctor,MD."));
 

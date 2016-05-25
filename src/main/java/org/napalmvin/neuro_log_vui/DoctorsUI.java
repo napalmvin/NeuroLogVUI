@@ -1,5 +1,6 @@
 package org.napalmvin.neuro_log_vui;
 
+import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -102,6 +103,7 @@ public class DoctorsUI extends UI {
             addWindow(popupWindow);
 
         });
+        
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
             removeWindow(popupWindow);
@@ -114,11 +116,13 @@ public class DoctorsUI extends UI {
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(100, Unit.PERCENTAGE);
         grid.setColumns(Doctor.FieldsList.getStringArray());
-        Grid.Column photo = grid.getColumn(Doctor.FieldsList.photoUrl.name());
+        Grid.Column photo = grid.getColumn(Doctor.FieldsList.photoName.name());
         photo.setRenderer(imgRndrr, converter);
         
         filter.setInputPrompt("Filter by last name");
 
+        addNewBtn.setId("new_doctor");
+        
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
         VerticalLayout mainLayout = new VerticalLayout(actions, grid);
         mainLayout.setHeight(100, Unit.PERCENTAGE);
