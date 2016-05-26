@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.napalmvin.neuro_log_vui;
+package org.napalmvin.neuro_log_vui.ui;
 
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.ExternalResource;

@@ -1,4 +1,4 @@
-package org.napalmvin.neuro_log_vui;
+package org.napalmvin.neuro_log_vui.ui.doctor;
 
 import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ import java.util.Date;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
+import org.napalmvin.neuro_log_vui.ui.PathToImgConverter;
 
 @SpringUI
 @Theme("mytheme")
