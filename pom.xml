@@ -58,13 +58,18 @@
             <groupId>org.metawidget.modules</groupId>
             <artifactId>metawidget-annotation</artifactId>
             <version>4.2</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
-        <!--        <dependency>
-            <groupId>org.napalmvin</groupId>
-            <artifactId>NeuroLog</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
