@@ -25,16 +25,12 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 
-/**
- *
- * @since
- * @author Vaadin Ltd
- */
-public class TestIcon {
 
-    int iconCount = 0;
+public class ThemeIcon {
 
-    public TestIcon(int startIndex) {
+    private int iconCount = 0;
+
+    public ThemeIcon(int startIndex) {
         iconCount = startIndex;
     }
 
@@ -56,7 +52,7 @@ public class TestIcon {
         return new ThemeResource("../runo/icons/" + imageSize + "/document.png");
     }
 
-    static List<FontAwesome> ICONS = Collections.unmodifiableList(Arrays
+    static final List<FontAwesome> ICONS = Collections.unmodifiableList(Arrays
             .asList(FontAwesome.values()));
 
 }
