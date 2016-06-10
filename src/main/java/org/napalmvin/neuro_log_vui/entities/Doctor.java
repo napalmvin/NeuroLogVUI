@@ -173,7 +173,7 @@ public class Doctor {
     }
 
     @UiRequired
-    public void setPhotoNamel(String photo) {
+    public void setPhotoName(String photo) {
         this.photoName = photo;
     }
 
