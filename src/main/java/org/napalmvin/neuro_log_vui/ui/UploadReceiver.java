@@ -5,11 +5,8 @@
  */
 package org.napalmvin.neuro_log_vui.ui;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.Receiver;
@@ -22,33 +19,53 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.napalmvin.neuro_log_vui.Constants.Type;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author LOL
  */
-public class UploadReceiver implements Receiver, SucceededListener, FailedListener {
+public class UploadReceiver implements Receiver, SucceededListener, FailedListener,Upload.StartedListener {
 
-    private File file;
-    private TextField fileName;
+    private void notifyAllAfterHookListeners(SucceededEvent event) {
+        for (AfterUploadSuceededListener listener : afterUploadSuceededListeners) {
+            listener.afterUploadSuceeded(event,file.getName(),type);
+            
+        }
+    }
 
-    private final Embedded image;
-    private ImageRepository imageRepository;
+    public void addAfterUploadSuceededListener(AfterUploadSuceededListener aThis) {
+        afterUploadSuceededListeners.add(aThis);
+    }
 
-    private Type type;
+   public interface AfterUploadSuceededListener{
+        public void afterUploadSuceeded(SucceededEvent event,String fileName,Type type);
+    }
+            
+            
+    private final ImageRepository imageRepository;
 
-    public UploadReceiver(TextField fileName, Embedded image, ImageRepository imageRepository, Type type) {
-        this.fileName = fileName;
-        this.image = image;
+    private final Type type;
+    
+    private File  file;
+    
+    private final Logger log=LoggerFactory.getLogger(UploadReceiver.class.getName());
+    
+    private final List<AfterUploadSuceededListener> afterUploadSuceededListeners=new LinkedList<>();
+
+    public UploadReceiver(ImageRepository imageRepository, Type type) {
         this.imageRepository = imageRepository;
         this.type = type;
     }
 
+    @Override
     public OutputStream receiveUpload(String filename,
             String mimeType) {
         // Create upload stream
@@ -74,17 +91,19 @@ public class UploadReceiver implements Receiver, SucceededListener, FailedListen
             Image img = new Image(file.getName(), data);
             imageRepository.save(img);
         } catch (IOException ex) {
-            Logger.getLogger(UploadReceiver.class.getName()).log(Level.SEVERE, null, ex);
+           log.error("Upload Error happened", ex);
         }
-
-        fileName.setValue(file.getName());
-        image.setSource(new ExternalResource(type.getParentFolder()+file.getName()));
-        image.setVisible(true);
+        notifyAllAfterHookListeners(event);
     }
 
     @Override
     public void uploadFailed(Upload.FailedEvent event) {
         throw new Error("Error during file upload", event.getReason());
+    }
+
+    @Override
+    public void uploadStarted(Upload.StartedEvent event) {
+        log.debug("uploadStarted");
     }
 
 }

@@ -6,7 +6,6 @@ import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ClassResource;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
@@ -24,16 +23,16 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
-import org.napalmvin.neuro_log_vui.ui.doctor.DoctorEditor;
-import org.napalmvin.neuro_log_vui.ui.doctor.DoctorsView;
+import org.napalmvin.neuro_log_vui.error.CustomErrorHandler;
 import org.napalmvin.neuro_log_vui.ui.vaadin.ValoMenuLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringUI()
@@ -41,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Title("NeuroLog")
 @PreserveOnRefresh
 public class MainUI extends UI {
+    private static final Logger log = LoggerFactory.getLogger(MainUI.class);
 
     CssLayout menuItemsLayout = new CssLayout();
     CssLayout mainMenu = new CssLayout();
@@ -53,27 +53,16 @@ public class MainUI extends UI {
 
     private final LinkedHashMap<String, String> menuItemsStrings = new LinkedHashMap<>();
     
-    private static final LinkedHashMap<String, String> themeVariants = new LinkedHashMap<>();
-    static {
-        themeVariants.put(ValoTheme.THEME_NAME, "Valo");
-        themeVariants.put("midsummer-night", "Midsummer Night");
-        themeVariants.put("tests-valo-blueprint", "Blueprint");
-        themeVariants.put("tests-valo-dark", "Dark");
-        themeVariants.put("tests-valo-facebook", "Facebook");
-        themeVariants.put("tests-valo-flatdark", "Flat dark");
-        themeVariants.put("tests-valo-flat", "Flat");
-        themeVariants.put("tests-valo-light", "Light");
-        themeVariants.put("tests-valo-metro", "Metro");
-        themeVariants.put("tests-valo-reindeer", "Migrate Reindeer");
-    }
-
     public MainUI() {
     }
 
     @Override
     protected void init(VaadinRequest request) {
+        log.info("Initializing MainUI");
 
         ValoMenuLayout root = new ValoMenuLayout();
+        
+         UI.getCurrent().setErrorHandler(new CustomErrorHandler());
 
         setContent(root);
         root.setWidth("100%");
@@ -81,7 +70,7 @@ public class MainUI extends UI {
         root.addMenu(buildMenu());
         addStyleName(ValoTheme.UI_WITH_MENU);
 
-         getPage().setTitle("NeuroLog");
+        getPage().setTitle("NeuroLog");
         
         navigator = new Navigator(this, root.getContentContainer());
         navigator.addProvider(viewProvider);

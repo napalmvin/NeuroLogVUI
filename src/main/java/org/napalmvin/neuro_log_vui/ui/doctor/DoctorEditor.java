@@ -16,12 +16,14 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
+import org.napalmvin.neuro_log_vui.Constants;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
@@ -40,7 +42,22 @@ import org.napalmvin.neuro_log_vui.ui.UploadReceiver;
  */
 @SpringComponent
 @UIScope
-public class DoctorEditor extends Panel {
+public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuceededListener {
+
+    @Override
+    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
+       photoName.setValue(fileName);
+
+       progressBar.setVisible(false);
+       
+        image.setSource(new ExternalResource(type.getParentFolder() + fileName));
+        image.setVisible(true);
+    }
+
+    public interface ChangeHandler {
+
+        void onChange();
+    }
 
     private final DoctorRepository doctorRepo;
 
@@ -60,40 +77,51 @@ public class DoctorEditor extends Panel {
     TextField photoName = new TextField("File name");
     Embedded image = new Embedded("Image");
 
-    UploadReceiver receiver ;
+    UploadReceiver receiver;
 
     Upload upload = new Upload();
-    
+    ProgressBar progressBar = new ProgressBar(0f);
+
     /* Action buttons */
     Button save = new Button("Save", FontAwesome.SAVE);
     Button cancel = new Button("Cancel");
     Button delete = new Button("Delete", FontAwesome.TRASH_O);
 
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
-    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, photoName, image, upload, actions);
+    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar,photoName, actions);
     private final ImageRepository imageRepo;
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public DoctorEditor(DoctorRepository doctorRepo,ImageRepository imageRepo) {
+    public DoctorEditor(DoctorRepository doctorRepo, ImageRepository imageRepo) {
         this.doctorRepo = doctorRepo;
-         this.imageRepo = imageRepo;
+        this.imageRepo = imageRepo;
         initUI();
         addValidators();
     }
 
     private void initUI() {
-        photoName.setVisible(false);
         vl.setSpacing(true);
         vl.setMargin(true);
         actions.setMargin(true);
         setContent(vl);
-        receiver=new UploadReceiver(photoName, image, imageRepo, IMAGE);
+        receiver = new UploadReceiver(imageRepo, IMAGE);
         upload.setReceiver(receiver);
         upload.addSucceededListener(receiver);
         upload.addFailedListener(receiver);
-        
-        // Configure and style components
+        upload.addProgressListener(new Upload.ProgressListener() {
+            @Override
+            public void updateProgress(long readBytes, long contentLength) {
+                if(!progressBar.isVisible()){
+                    progressBar.setVisible(true);
+                }
+                progressBar.setValue(((float)readBytes)/contentLength);
+            }
+        });
+
+        receiver.addAfterUploadSuceededListener(this);
+
+                // Configure and style components
         actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -103,6 +131,7 @@ public class DoctorEditor extends Panel {
         delete.addClickListener(e -> doctorRepo.delete(doctor));
         cancel.addClickListener(e -> editDoctor(doctor));
         image.setWidth(200, Unit.PIXELS);
+        progressBar.setVisible(false);
         setVisible(false);
     }
 
@@ -112,17 +141,12 @@ public class DoctorEditor extends Panel {
         photoName.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
     }
 
-    public interface ChangeHandler {
-        
-        void onChange();
-    }
-
     public final void editDoctor(Doctor dr) {
         final boolean persisted = dr.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
             doctor = doctorRepo.findOne(dr.getId());
-            image.setSource(new ExternalResource(IMAGE.getParentFolder()+dr.getPhotoName()));
+            image.setSource(new ExternalResource(IMAGE.getParentFolder() + dr.getPhotoName()));
             image.setVisible(true);
 
         } else {
@@ -153,4 +177,5 @@ public class DoctorEditor extends Panel {
         delete.addClickListener(e -> h.onChange());
     }
 
+    
 }
