@@ -1,6 +1,6 @@
 package org.napalmvin.neuro_log_vui.ui;
 
-import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SpringUI()
 @Theme("mytheme")
 @Title("NeuroLog")
-@PreserveOnRefresh
+//@PreserveOnRefresh
 public class MainUI extends UI {
     private static final Logger log = LoggerFactory.getLogger(MainUI.class);
 
