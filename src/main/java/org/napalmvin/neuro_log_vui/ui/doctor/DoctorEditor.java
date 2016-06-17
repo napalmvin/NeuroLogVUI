@@ -131,6 +131,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         delete.addClickListener(e -> doctorRepo.delete(doctor));
         cancel.addClickListener(e -> editDoctor(doctor));
         image.setWidth(200, Unit.PIXELS);
+        image.setId("new_doctor_image");
         progressBar.setVisible(false);
         setVisible(false);
     }

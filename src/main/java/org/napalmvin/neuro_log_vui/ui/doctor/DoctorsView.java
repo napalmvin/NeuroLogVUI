@@ -50,6 +50,7 @@ public class DoctorsView extends VerticalLayout implements View {
         this.grid = new Grid();
         this.filter = new TextField();
         this.addNewBtn = new Button("New doctor", FontAwesome.PLUS);
+        addNewBtn.setId("new_doctor");
         this.popupWindow = new Window();
         
         initMainUI();

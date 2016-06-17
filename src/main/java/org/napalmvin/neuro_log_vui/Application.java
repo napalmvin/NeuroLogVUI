@@ -29,7 +29,8 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @ComponentScan(basePackages ={"org.napalmvin.neuro_log_vui","org.napalmvin.neuro_log_vui.ui.doctor"} )
-@PropertySource("application.properties")
+@PropertySource("classpath:application.properties")
+
 public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
