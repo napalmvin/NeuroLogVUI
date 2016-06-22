@@ -4,6 +4,7 @@ import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ExternalResource;
@@ -30,6 +31,8 @@ import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.ui.UploadReceiver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple example to introduce building forms. As your real application is
@@ -77,6 +80,8 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     TextField photoName = new TextField("File name");
     Embedded image = new Embedded("Image");
 
+    BeanFieldGroup<Doctor> bindFieldsUnbuffered;
+
     UploadReceiver receiver;
 
     Upload upload = new Upload();
@@ -84,13 +89,16 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
 
     /* Action buttons */
     Button save = new Button("Save", FontAwesome.SAVE);
-    Button cancel = new Button("Cancel",FontAwesome.RECYCLE);
+    Button cancel = new Button("Cancel", FontAwesome.RECYCLE);
     Button delete = new Button("Delete", FontAwesome.TRASH_O);
 
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
     VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar, photoName, actions);
+    
     private final ImageRepository imageRepo;
+    
+    final static Logger log=LoggerFactory.getLogger(DoctorEditor.class);
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
@@ -109,7 +117,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         gender.setId("gender");
         race.setId("race");
         image.setId("image");
-        
+
         upload.setId("upload");
         save.setId("save");
         cancel.setId("cancel");
@@ -141,15 +149,20 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         // wire action buttons to save, delete and reset
-        save.addClickListener(e ->{
+        save.addClickListener(e -> {
+            try {
+                bindFieldsUnbuffered.commit();
+            } catch (FieldGroup.CommitException ex) {
+             log.error("", ex);
+            }
             doctorRepo.save(doctor);
-                });
+        });
         delete.addClickListener(e -> {
             doctorRepo.delete(doctor);
-                });
+        });
         cancel.addClickListener(e -> {
             editDoctor(doctor);
-                });
+        });
         image.setWidth(200, Unit.PIXELS);
         progressBar.setVisible(false);
         setVisible(false);
@@ -175,12 +188,12 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
             image.setVisible(false);
 
         }
-       
 
         // Bind customer properties to similarly named fields
         // Could also use annotation or "manual binding" or programmatically
         // moving values from fields to entities before saving
-        BeanFieldGroup.bindFieldsUnbuffered(doctor, this);
+        bindFieldsUnbuffered = BeanFieldGroup.bindFieldsUnbuffered(doctor, this);
+
 //        setSizeFull();
         setVisible(true);
 
