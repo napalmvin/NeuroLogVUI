@@ -46,10 +46,10 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
 
     @Override
     public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
-       photoName.setValue(fileName);
+        photoName.setValue(fileName);
 
-       progressBar.setVisible(false);
-       
+        progressBar.setVisible(false);
+
         image.setSource(new ExternalResource(type.getParentFolder() + fileName));
         image.setVisible(true);
     }
@@ -84,11 +84,12 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
 
     /* Action buttons */
     Button save = new Button("Save", FontAwesome.SAVE);
-    Button cancel = new Button("Cancel");
+    Button cancel = new Button("Cancel",FontAwesome.RECYCLE);
     Button delete = new Button("Delete", FontAwesome.TRASH_O);
 
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
-    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar,photoName, actions);
+
+    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar, photoName, actions);
     private final ImageRepository imageRepo;
 
     @Autowired
@@ -101,6 +102,19 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     }
 
     private void initUI() {
+        firstName.setId("firstName");
+        lastName.setId("lastName");
+        birthDate.setId("birthDate");
+        qualification.setId("qualification");
+        gender.setId("gender");
+        race.setId("race");
+        image.setId("image");
+        
+        upload.setId("upload");
+        save.setId("save");
+        cancel.setId("cancel");
+        delete.setId("delete");
+
         vl.setSpacing(true);
         vl.setMargin(true);
         actions.setMargin(true);
@@ -112,33 +126,38 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         upload.addProgressListener(new Upload.ProgressListener() {
             @Override
             public void updateProgress(long readBytes, long contentLength) {
-                if(!progressBar.isVisible()){
+                if (!progressBar.isVisible()) {
                     progressBar.setVisible(true);
                 }
-                progressBar.setValue(((float)readBytes)/contentLength);
+                progressBar.setValue(((float) readBytes) / contentLength);
             }
         });
 
         receiver.addAfterUploadSuceededListener(this);
 
-                // Configure and style components
+        // Configure and style components
         actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         // wire action buttons to save, delete and reset
-        save.addClickListener(e -> doctorRepo.save(doctor));
-        delete.addClickListener(e -> doctorRepo.delete(doctor));
-        cancel.addClickListener(e -> editDoctor(doctor));
+        save.addClickListener(e ->{
+            doctorRepo.save(doctor);
+                });
+        delete.addClickListener(e -> {
+            doctorRepo.delete(doctor);
+                });
+        cancel.addClickListener(e -> {
+            editDoctor(doctor);
+                });
         image.setWidth(200, Unit.PIXELS);
-        image.setId("new_doctor_image");
         progressBar.setVisible(false);
         setVisible(false);
     }
 
     private void addValidators() {
-        firstName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
-        lastName.addValidator(new StringLengthValidator("Must have length  from 1 to 10", 1, 10, false));
+        firstName.addValidator(new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false));
+        lastName.addValidator(new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false));
         photoName.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
     }
 
@@ -156,7 +175,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
             image.setVisible(false);
 
         }
-        cancel.setVisible(persisted);
+       
 
         // Bind customer properties to similarly named fields
         // Could also use annotation or "manual binding" or programmatically
@@ -176,7 +195,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         // is clicked
         save.addClickListener(e -> h.onChange());
         delete.addClickListener(e -> h.onChange());
+        cancel.addClickListener(e -> h.onChange());
     }
 
-    
 }

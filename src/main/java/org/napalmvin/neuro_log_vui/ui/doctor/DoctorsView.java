@@ -25,7 +25,6 @@ import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.ui.PathToImgConverter;
-import org.springframework.stereotype.Component;
 
 @Theme("mytheme")
 @SpringView(name = "doctors")
@@ -45,6 +44,7 @@ public class DoctorsView extends VerticalLayout implements View {
 
     @Autowired
     public DoctorsView(DoctorRepository repo, DoctorEditor editor) {
+        this.setImmediate(true);
         this.repo = repo;
         this.editor = editor;
         this.grid = new Grid();
@@ -106,7 +106,7 @@ public class DoctorsView extends VerticalLayout implements View {
 
     @SuppressWarnings("all")
     private void initMainUI() {
-
+        grid.setImmediate(true);        
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(100, Unit.PERCENTAGE);
         grid.setColumns(Doctor.FieldsList.getStringArray());
