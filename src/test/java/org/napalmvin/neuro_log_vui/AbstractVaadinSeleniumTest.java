@@ -23,17 +23,17 @@ public abstract class AbstractVaadinSeleniumTest {
     protected static WebDriver driver;
     protected static Logger log;
 
-    public WebElement findButtonByCaption(String caption) {
-        final List<WebElement> buttons
-                = driver.findElements(By.className("v-button"));
-        for (final WebElement button : buttons) {
-            if (button.getText().equals(caption)) {
-                return button;
-            }
-        }
-        return null;
-    }
-
+//    public WebElement findButtonByCaption(String caption) {
+//        final List<WebElement> buttons
+//                = driver.findElements(By.className("v-button"));
+//        for (final WebElement button : buttons) {
+//            if (button.getText().equals(caption)) {
+//                return button;
+//            }
+//        }
+//        return null;
+//    }
+//
     public WebElement findButtonByPartCaption(String caption) {
         final List<WebElement> buttons
                 = driver.findElements(By.className("v-button"));
@@ -45,5 +45,14 @@ public abstract class AbstractVaadinSeleniumTest {
             }
         }
         return null;
+    }
+    
+    private  void log(String str){
+        log.error(BEFORE+">>>"+str+AFTER);
+    }
+    
+    protected  void log(WebElement webEl){
+        log.error(BEFORE+">>>>>>\ntagname:"+webEl.getTagName()+"|n"
+                +webEl.getText()+AFTER);
     }
 }

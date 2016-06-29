@@ -169,9 +169,21 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     }
 
     private void addValidators() {
-        firstName.addValidator(new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false));
-        lastName.addValidator(new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false));
+        StringLengthValidator lengthValidator = new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false);
+        firstName.addValidator(lengthValidator);
+        lastName.addValidator(lengthValidator);
         photoName.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
+//        RegexpValidator raceValidator = new RegexpValidator(
+//                RaceEnum.Afropoid+"|"+RaceEnum.Mongoloid+"|"+RaceEnum.Caucasian,"Elements must correspong ");
+//        race.addValidator(raceValidator);
+//        
+//        birthDate.addValidator(
+//                new DateRangeValidator("Select right date", new Date(1900, 1, 1), new Date(), Resolution.MONTH));
+//        
+//        RegexpValidator genderValidator = new RegexpValidator(
+//                GenderEnum.MALE+"|"+GenderEnum.FEMALE,"Elements must correspong enum");
+//        gender.addValidator(genderValidator);
+        
     }
 
     public final void editDoctor(Doctor dr) {
