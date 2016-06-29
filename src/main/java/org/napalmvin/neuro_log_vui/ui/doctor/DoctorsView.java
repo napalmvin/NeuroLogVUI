@@ -21,6 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.Date;
+import java.util.ResourceBundle;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
@@ -30,8 +31,11 @@ import org.napalmvin.neuro_log_vui.ui.PathToImgConverter;
 @SpringView(name = "doctors")
 public class DoctorsView extends VerticalLayout implements View {
 
+    private ResourceBundle msg;
+
     private final DoctorRepository repo;
-    private final DoctorEditor editor;
+    
+    private  DoctorEditor editor;
 
     private final Window popupWindow;
 
@@ -43,22 +47,24 @@ public class DoctorsView extends VerticalLayout implements View {
     private final PathToImgConverter converter = new PathToImgConverter();
 
     @Autowired
-    public DoctorsView(DoctorRepository repo, DoctorEditor editor) {
+    public DoctorsView(DoctorRepository repo,ResourceBundle msg,DoctorEditor editor) {
         this.setImmediate(true);
+        this.msg=msg;
+        this.editor=editor;
         this.repo = repo;
-        this.editor = editor;
+//        this.editor = editor;
         this.grid = new Grid();
         this.filter = new TextField();
-        this.addNewBtn = new Button("New doctor", FontAwesome.PLUS);
+        this.addNewBtn = new Button(msg.getString("new_doctor"), FontAwesome.PLUS);
+
         addNewBtn.setId("new_doctor");
         this.popupWindow = new Window();
-        
+
         initMainUI();
         initEditorWindow();
         bindListeners();
 
         // Initialize listing
-        
     }
 
     // tag::listCustomers[]
@@ -69,6 +75,10 @@ public class DoctorsView extends VerticalLayout implements View {
         } else {
             grid.setContainerDataSource(new BeanItemContainer(Doctor.class,
                     repo.findByLastNameStartsWithIgnoreCase(text)));
+        }
+        //Set localized header(column names)
+        for (String key : Doctor.FieldsList.getStringArray()) {
+            grid.getDefaultHeaderRow().getCell(key).setText(msg.getString(key));
         }
     }
     // end::listCustomers[]
@@ -91,8 +101,8 @@ public class DoctorsView extends VerticalLayout implements View {
 
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> {
-            editor.editDoctor(new Doctor("", "", new Date(),
-                    GenderEnum.MALE, RaceEnum.Caucasian, null, "Good docctor,MD."));
+            Doctor dr=new Doctor();
+            editor.editDoctor(dr);
             UI.getCurrent().addWindow(popupWindow);
 
         });
@@ -106,14 +116,14 @@ public class DoctorsView extends VerticalLayout implements View {
 
     @SuppressWarnings("all")
     private void initMainUI() {
-        grid.setImmediate(true);        
+        grid.setImmediate(true);
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(100, Unit.PERCENTAGE);
         grid.setColumns(Doctor.FieldsList.getStringArray());
         Grid.Column photo = grid.getColumn(Doctor.FieldsList.photoName.name());
         photo.setRenderer(imgRndrr, converter);
 
-        filter.setInputPrompt("Filter by last name");
+        filter.setInputPrompt(msg.getString("filter_by_last_name"));
 
         addNewBtn.setId("new_doctor");
 

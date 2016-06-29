@@ -24,6 +24,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.ResourceBundle;
 import org.napalmvin.neuro_log_vui.Constants;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
@@ -46,67 +47,67 @@ import org.slf4j.LoggerFactory;
 @SpringComponent
 @UIScope
 public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuceededListener {
-
-    @Override
-    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
-        photoName.setValue(fileName);
-
-        progressBar.setVisible(false);
-
-        image.setSource(new ExternalResource(type.getParentFolder() + fileName));
-        image.setVisible(true);
-    }
-
-    public interface ChangeHandler {
-
-        void onChange();
-    }
-
+    private ResourceBundle msg;
     private final DoctorRepository doctorRepo;
+    private final ImageRepository imageRepo;
+    private BeanFieldGroup<Doctor> bindFieldsUnbuffered;
 
-    /**
-     * The currently edited customer
-     */
     private Doctor doctor;
 
-
-    /* Fields to edit properties in Customer entity */
-    TextField firstName = new TextField("First name");
-    TextField lastName = new TextField("Last name");
-    DateField birthDate = new DateField("Birth date", new Date());
-    TextField qualification = new TextField("Qualificaton");
-    ComboBox gender = new ComboBox("Sex", Arrays.asList(GenderEnum.values()));
-    ComboBox race = new ComboBox("Race", Arrays.asList(RaceEnum.values()));
-    TextField photoName = new TextField("File name");
-    Embedded image = new Embedded("Image");
-
-    BeanFieldGroup<Doctor> bindFieldsUnbuffered;
+    TextField firstName;
+    TextField lastName;
+    DateField birthDate;
+    TextField qualification;
+    ComboBox gender;
+    ComboBox race;
+    TextField photoName;
+    Embedded image;
 
     UploadReceiver receiver;
+    Upload upload;
+    ProgressBar progressBar;
 
-    Upload upload = new Upload();
-    ProgressBar progressBar = new ProgressBar(0f);
+    Button save;
+    Button cancel;
+    Button delete;
+    HorizontalLayout actions;
+    VerticalLayout vl;
 
-    /* Action buttons */
-    Button save = new Button("Save", FontAwesome.SAVE);
-    Button cancel = new Button("Cancel", FontAwesome.RECYCLE);
-    Button delete = new Button("Delete", FontAwesome.TRASH_O);
-
-    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
-
-    VerticalLayout vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar, photoName, actions);
-    
-    private final ImageRepository imageRepo;
-    
-    final static Logger log=LoggerFactory.getLogger(DoctorEditor.class);
+    final static Logger log = LoggerFactory.getLogger(DoctorEditor.class);
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public DoctorEditor(DoctorRepository doctorRepo, ImageRepository imageRepo) {
+    public DoctorEditor(DoctorRepository doctorRepo, ImageRepository imageRepo, ResourceBundle msg) {        
+        this.msg = msg;
         this.doctorRepo = doctorRepo;
         this.imageRepo = imageRepo;
+        createUI();
         initUI();
         addValidators();
+    }
+
+    private void createUI() {
+       
+        
+        this.delete = new Button(msg.getString("delete"), FontAwesome.TRASH_O);
+        this.cancel = new Button(msg.getString("cancel"), FontAwesome.RECYCLE);
+        this.save = new Button(msg.getString("save"), FontAwesome.SAVE);
+        this.actions = new HorizontalLayout(save, cancel, delete);
+        
+        this.progressBar = new ProgressBar(0f);
+        this.upload = new Upload();
+        upload.setCaption(msg.getString("upload"));
+        this.image = new Embedded(msg.getString("image"));
+        this.photoName = new TextField(msg.getString("photoName"));
+        this.gender = new ComboBox(msg.getString("gender"), Arrays.asList(GenderEnum.values()));
+        this.race = new ComboBox(msg.getString("race"), Arrays.asList(RaceEnum.values()));
+        this.qualification = new TextField(msg.getString("qualification"));
+        this.birthDate = new DateField(msg.getString("birthDate"), new Date());
+        this.lastName = new TextField(msg.getString("lastName"));
+        this.firstName = new TextField(msg.getString("firstName"));
+        
+        this.vl = new VerticalLayout(firstName, lastName, birthDate, gender, race, qualification, image, upload, progressBar, photoName, actions);
+        
     }
 
     private void initUI() {
@@ -153,7 +154,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
             try {
                 bindFieldsUnbuffered.commit();
             } catch (FieldGroup.CommitException ex) {
-             log.error("", ex);
+                log.error("", ex);
             }
             doctorRepo.save(doctor);
         });
@@ -169,10 +170,11 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     }
 
     private void addValidators() {
-        StringLengthValidator lengthValidator = new StringLengthValidator("Must have length  from 1 to 25", 1, 25, false);
+        StringLengthValidator lengthValidator = new StringLengthValidator(msg.getString("length_limitation_1_25"),
+                1, 25, false);
         firstName.addValidator(lengthValidator);
         lastName.addValidator(lengthValidator);
-        photoName.addValidator(new StringLengthValidator("File should be selected", 1, 125, false));
+        photoName.addValidator(new StringLengthValidator(msg.getString("file_selection"), 1, 125, false));
 //        RegexpValidator raceValidator = new RegexpValidator(
 //                RaceEnum.Afropoid+"|"+RaceEnum.Mongoloid+"|"+RaceEnum.Caucasian,"Elements must correspong ");
 //        race.addValidator(raceValidator);
@@ -183,7 +185,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
 //        RegexpValidator genderValidator = new RegexpValidator(
 //                GenderEnum.MALE+"|"+GenderEnum.FEMALE,"Elements must correspong enum");
 //        gender.addValidator(genderValidator);
-        
+
     }
 
     public final void editDoctor(Doctor dr) {
@@ -213,6 +215,21 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         save.focus();
         // Select all text in firstName field automatically
         firstName.selectAll();
+    }
+
+    @Override
+    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
+        photoName.setValue(fileName);
+
+        progressBar.setVisible(false);
+
+        image.setSource(new ExternalResource(type.getParentFolder() + fileName));
+        image.setVisible(true);
+    }
+
+    public interface ChangeHandler {
+
+        void onChange();
     }
 
     public void setChangeHandler(ChangeHandler h) {

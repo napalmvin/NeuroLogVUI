@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
@@ -21,14 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@ComponentScan(basePackages ={"org.napalmvin.neuro_log_vui","org.napalmvin.neuro_log_vui.ui.doctor"} )
+@ComponentScan(basePackages = {"org.napalmvin.neuro_log_vui", "org.napalmvin.neuro_log_vui.ui.doctor"})
 @PropertySource("classpath:application.properties")
 
 public class Application {
@@ -37,6 +37,11 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class);
+    }
+
+    @Bean(name = "msg")
+    public ResourceBundle getResourceBundle() {
+        return ResourceBundle.getBundle("Messages", new Locale("uk", "UA"));
     }
 
     @Bean
@@ -56,17 +61,29 @@ public class Application {
                 }
 
                 // save a couple of customers
-                repository.save(new Doctor("Jack", "Bauer", (new GregorianCalendar(1987, 12, 1)).getTime(),
-                        GenderEnum.MALE, RaceEnum.Caucasian, imgs.get(0), "Good docctor,MD."));
-                repository.save(new Doctor("Chloe", "O'Brian", (new GregorianCalendar(1987, 1, 1)).getTime(),
-                        GenderEnum.FEMALE, RaceEnum.Caucasian, imgs.get(1), "Good docctor,MD."));
-                repository.save(new Doctor("Kim", "Bauer",(new GregorianCalendar(1975, 12, 1)).getTime(),
-                        GenderEnum.FEMALE, RaceEnum.Caucasian, imgs.get(2), "Good docctor,MD."));
-                repository.save(new Doctor("David", "Palmer", (new GregorianCalendar(1985, 12, 1)).getTime(),
-                        GenderEnum.MALE, RaceEnum.Caucasian, imgs.get(1), "Good docctor,MD."));
-                repository.save(new Doctor("Michelle", "Dessler", (new GregorianCalendar(1968, 12, 1)).getTime(),
-                        GenderEnum.FEMALE, RaceEnum.Caucasian, imgs.get(0), "Good docctor,MD."));
-
+                Doctor dr1 = new Doctor();
+                dr1.setFirstName("Jack");
+                dr1.setMiddleName("Atilla");
+                dr1.setLastName("Bauer");
+                dr1.setBirthDate((new GregorianCalendar(1987, 12, 1)).getTime());
+                dr1.setGender(GenderEnum.MALE);
+                dr1.setRace(RaceEnum.Caucasian);
+                dr1.setPhotoName(imgs.get(0));
+                dr1.setQualification("Good docctor,MD.");
+               
+                Doctor dr2 = new Doctor();
+                dr2.setFirstName("Sue");
+                dr2.setMiddleName("Mery");
+                dr2.setLastName("Yew");
+                dr2.setBirthDate((new GregorianCalendar(1975, 12, 1)).getTime());
+                dr2.setGender(GenderEnum.FEMALE);
+                dr2.setRace(RaceEnum.Mongoloid);
+                dr2.setPhotoName(imgs.get(1));
+                dr2.setQualification("Good docctor,MD.");
+                
+                repository.save(dr1);
+                repository.saveAndFlush(dr2);
+                
                 // fetch all customers
                 log.info("Doctors found with findAll():");
                 log.info("-------------------------------");

@@ -1,6 +1,5 @@
 package org.napalmvin.neuro_log_vui.ui;
 
-import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
@@ -27,13 +26,16 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.error.CustomErrorHandler;
 import org.napalmvin.neuro_log_vui.ui.vaadin.ValoMenuLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
 @SpringUI()
 @Theme("mytheme")
@@ -52,6 +54,10 @@ public class MainUI extends UI {
     private SpringViewProvider viewProvider;
 
     private final LinkedHashMap<String, String> menuItemsStrings = new LinkedHashMap<>();
+    
+    
+    @Autowired
+    private ResourceBundle msg;
     
     public MainUI() {
     }
@@ -129,8 +135,8 @@ public class MainUI extends UI {
 
     private void addMenuitems() {
 
-        menuItemsStrings.put("doctors", "Doctors");
-        menuItemsStrings.put("patients", "Patients");
+        menuItemsStrings.put("doctors", msg.getString("doctors"));
+        menuItemsStrings.put("patients", msg.getString("patients"));
     }
 
     private void addApplicationNameComponent() {
@@ -148,7 +154,7 @@ public class MainUI extends UI {
     }
 
     private void addIconSubMenu() {
-        final Button iconSubmenu = new Button("Menu", new ClickListener() {
+        final Button iconSubmenu = new Button(msg.getString("menu"), new ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 if (mainMenu.getStyleName().contains("valo-menu-visible")) {
@@ -187,7 +193,7 @@ public class MainUI extends UI {
         for (final Entry<String, String> item : menuItemsStrings.entrySet()) {
             String key = item.getKey();
             if (key.equals("doctors")) {
-                label = new Label("Tables", ContentMode.HTML);
+                label = new Label(msg.getString("tables"), ContentMode.HTML);
                 label.setPrimaryStyleName("valo-menu-subtitle");
                 label.addStyleName("h4");
                 label.setSizeUndefined();

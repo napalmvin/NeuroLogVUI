@@ -28,6 +28,7 @@ public class Doctor {
     public enum FieldsList {
         id,
         firstName,
+        middleName,
         lastName,
         birthDate,
         gender,
@@ -52,6 +53,8 @@ public class Doctor {
     
     private String firstName;
     
+    private String middleName;
+    
     private String lastName;
     
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -68,17 +71,26 @@ public class Doctor {
     
     private String qualification;
 
-    protected Doctor() {
+    public Doctor() {
+    }
+    
+
+//    public Doctor(String first_name,String middleName, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photoName, String qualification) {
+//        this.firstName = first_name;
+//        this.lastName = last_name;
+//        this.birthDate = birth_date;
+//        this.gender = sex;
+//        this.race = race;
+//        this.photoName = photoName;
+//        this.qualification = qualification;
+//    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
-    public Doctor(String first_name, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photoName, String qualification) {
-        this.firstName = first_name;
-        this.lastName = last_name;
-        this.birthDate = birth_date;
-        this.gender = sex;
-        this.race = race;
-        this.photoName = photoName;
-        this.qualification = qualification;
+    public String getMiddleName() {
+        return middleName;
     }
 
     @UiHidden
