@@ -18,6 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.metawidget.inspector.annotation.UiHidden;
 import org.metawidget.inspector.annotation.UiRequired;
 
@@ -50,40 +53,41 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
+    @NotEmpty
+    @Length(min = 1, max = 25)
     private String firstName;
-    
+
+    @Length(min = 0, max = 25)
     private String middleName;
-    
+
+    @NotEmpty
+    @Length(min = 1, max = 25)
     private String lastName;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
+    @NotEmpty
     private Date birthDate;
-    
+
     @Enumerated(EnumType.STRING)
+    @NotNull
+//    @javax.validation.constraints.Size(min = 1, max = 25)
     private GenderEnum gender;
-    
+
     @Enumerated(EnumType.STRING)
+    @NotNull
+//    @javax.validation.constraints.Size(min = 1, max = 25)
     private RaceEnum race;
 
 //    @OneToOne(targetEntity = Image.class)
+    @NotEmpty
     private String photoName;
-    
+
+    @Length(min = 1, max = 254)
     private String qualification;
 
     public Doctor() {
     }
-    
-
-//    public Doctor(String first_name,String middleName, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photoName, String qualification) {
-//        this.firstName = first_name;
-//        this.lastName = last_name;
-//        this.birthDate = birth_date;
-//        this.gender = sex;
-//        this.race = race;
-//        this.photoName = photoName;
-//        this.qualification = qualification;
-//    }
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;

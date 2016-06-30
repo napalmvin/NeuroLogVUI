@@ -68,7 +68,7 @@ public class MainUI extends UI {
 
         ValoMenuLayout root = new ValoMenuLayout();
         
-         UI.getCurrent().setErrorHandler(new CustomErrorHandler());
+         UI.getCurrent().setErrorHandler(new CustomErrorHandler(msg));
 
         setContent(root);
         root.setWidth("100%");

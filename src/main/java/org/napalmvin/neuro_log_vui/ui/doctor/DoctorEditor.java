@@ -25,6 +25,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
+import javax.validation.Valid;
 import org.napalmvin.neuro_log_vui.Constants;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
