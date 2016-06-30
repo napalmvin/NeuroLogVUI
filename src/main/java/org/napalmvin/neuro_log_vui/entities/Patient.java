@@ -18,6 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.metawidget.inspector.annotation.UiHidden;
 import org.metawidget.inspector.annotation.UiRequired;
 
@@ -28,12 +31,12 @@ public class Patient {
     public enum FieldsList {
         id,
         firstName,
+        middleName,
         lastName,
         birthDate,
         gender,
         race,
-        photoName,
-        qualification;
+        photoName;
 
         public static String[] getStringArray() {
             FieldsList[] values = FieldsList.values();
@@ -49,36 +52,45 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
+    @NotEmpty
+    @Length(min = 1, max = 25)
     private String firstName;
-    
+
+    @Length(min = 0, max = 25)
+    private String middleName;
+
+    @NotEmpty
+    @Length(min = 1, max = 25)
     private String lastName;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
+    @NotNull
     private Date birthDate;
-    
+
     @Enumerated(EnumType.STRING)
+    @NotNull
+//    @javax.validation.constraints.Size(min = 1, max = 25)
     private GenderEnum gender;
-    
+
     @Enumerated(EnumType.STRING)
+    @NotNull
+//    @javax.validation.constraints.Size(min = 1, max = 25)
     private RaceEnum race;
 
 //    @OneToOne(targetEntity = Image.class)
+    @NotEmpty
     private String photoName;
-    
-    private String prerequisite;
 
-    protected Patient() {
+    public Patient() {
     }
 
-    public Patient(String first_name, String last_name, Date birth_date, GenderEnum sex, RaceEnum race, String photoName, String prerequisite) {
-        this.firstName = first_name;
-        this.lastName = last_name;
-        this.birthDate = birth_date;
-        this.gender = sex;
-        this.race = race;
-        this.photoName = photoName;
-        this.prerequisite = prerequisite;
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
     }
 
     @UiHidden
@@ -108,10 +120,6 @@ public class Patient {
 
     public String getPhotoName() {
         return photoName;
-    }
-
-    public String getPrerequisite() {
-        return prerequisite;
     }
 
     @Override
@@ -176,10 +184,4 @@ public class Patient {
     public void setPhotoName(String photo) {
         this.photoName = photo;
     }
-
-    @UiRequired
-    public void setPrerequisite(String qualification) {
-        this.prerequisite = qualification;
-    }
-
 }

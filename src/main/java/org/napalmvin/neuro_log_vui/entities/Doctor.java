@@ -66,7 +66,7 @@ public class Doctor {
     private String lastName;
 
     @Temporal(javax.persistence.TemporalType.DATE)
-    @NotEmpty
+    @NotNull
     private Date birthDate;
 
     @Enumerated(EnumType.STRING)

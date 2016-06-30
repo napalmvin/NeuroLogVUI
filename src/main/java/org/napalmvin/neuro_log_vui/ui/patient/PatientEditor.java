@@ -1,11 +1,10 @@
-package org.napalmvin.neuro_log_vui.ui.doctor;
+package org.napalmvin.neuro_log_vui.ui.patient;
 
-import org.napalmvin.neuro_log_vui.data.DoctorRepository;
+import org.napalmvin.neuro_log_vui.data.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
@@ -25,13 +24,12 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javax.validation.Valid;
 import org.napalmvin.neuro_log_vui.Constants;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
-import org.napalmvin.neuro_log_vui.entities.Doctor;
+import org.napalmvin.neuro_log_vui.entities.Patient;
 import org.napalmvin.neuro_log_vui.ui.UploadReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +45,13 @@ import org.slf4j.LoggerFactory;
  */
 @SpringComponent
 @UIScope
-public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuceededListener {
+public class PatientEditor extends Panel implements UploadReceiver.AfterUploadSuceededListener {
     private ResourceBundle msg;
-    private final DoctorRepository doctorRepo;
+    private final PatientRepository personRepo;
     private final ImageRepository imageRepo;
-    private BeanFieldGroup<Doctor> bindFieldsUnbuffered;
+    private BeanFieldGroup<Patient> bindFieldsUnbuffered;
 
-    private Doctor doctor;
+    private Patient person;
 
     TextField firstName;
     TextField lastName;
@@ -74,13 +72,13 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     HorizontalLayout actions;
     VerticalLayout vl;
 
-    final static Logger log = LoggerFactory.getLogger(DoctorEditor.class);
+    final static Logger log = LoggerFactory.getLogger(PatientEditor.class);
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public DoctorEditor(DoctorRepository doctorRepo, ImageRepository imageRepo, ResourceBundle msg) {        
+    public PatientEditor(PatientRepository personRepo, ImageRepository imageRepo, ResourceBundle msg) {        
         this.msg = msg;
-        this.doctorRepo = doctorRepo;
+        this.personRepo = personRepo;
         this.imageRepo = imageRepo;
         createUI();
         initUI();
@@ -157,13 +155,13 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
             } catch (FieldGroup.CommitException ex) {
                 log.error("", ex);
             }
-            doctorRepo.save(doctor);
+            personRepo.save(person);
         });
         delete.addClickListener(e -> {
-            doctorRepo.delete(doctor);
+            personRepo.delete(person);
         });
         cancel.addClickListener(e -> {
-            editDoctor(doctor);
+            edit(person);
         });
         image.setWidth(200, Unit.PIXELS);
         progressBar.setVisible(false);
@@ -189,16 +187,16 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
 
     }
 
-    public final void editDoctor(Doctor dr) {
-        final boolean persisted = dr.getId() != null;
+    public final void edit(Patient pt ){
+        final boolean persisted = pt.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
-            doctor = doctorRepo.findOne(dr.getId());
-            image.setSource(new ExternalResource(IMAGE.getParentFolder() + dr.getPhotoName()));
+            person = personRepo.findOne(pt.getId());
+            image.setSource(new ExternalResource(IMAGE.getParentFolder() + pt.getPhotoName()));
             image.setVisible(true);
 
         } else {
-            doctor = dr;
+            person = pt;
             image.setSource(null);
             image.setVisible(false);
 
@@ -207,7 +205,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         // Bind customer properties to similarly named fields
         // Could also use annotation or "manual binding" or programmatically
         // moving values from fields to entities before saving
-        bindFieldsUnbuffered = BeanFieldGroup.bindFieldsUnbuffered(doctor, this);
+        bindFieldsUnbuffered = BeanFieldGroup.bindFieldsUnbuffered(person, this);
 
 //        setSizeFull();
         setVisible(true);

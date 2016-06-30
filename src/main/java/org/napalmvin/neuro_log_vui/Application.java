@@ -15,7 +15,9 @@ import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.RaceEnum;
 import org.napalmvin.neuro_log_vui.data.GenderEnum;
+import org.napalmvin.neuro_log_vui.data.PatientRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
+import org.napalmvin.neuro_log_vui.entities.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,8 @@ public class Application {
 
     @Bean
     @Autowired
-    public CommandLineRunner loadData(DoctorRepository repository) {
+    public CommandLineRunner loadData(DoctorRepository drRepo,
+                                      PatientRepository patRepo) {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
@@ -60,7 +63,12 @@ public class Application {
                     log.error("Whoops", x);
                 }
 
-                // save a couple of customers
+                createDoctors(imgs);
+                createPatients(imgs);
+
+            }
+            
+            private void createDoctors(List<String> imgs) {
                 Doctor dr1 = new Doctor();
                 dr1.setFirstName("Jack");
                 dr1.setMiddleName("Atilla");
@@ -70,7 +78,7 @@ public class Application {
                 dr1.setRace(RaceEnum.Caucasian);
                 dr1.setPhotoName(imgs.get(0));
                 dr1.setQualification("Good docctor,MD.");
-               
+
                 Doctor dr2 = new Doctor();
                 dr2.setFirstName("Sue");
                 dr2.setMiddleName("Mery");
@@ -80,34 +88,82 @@ public class Application {
                 dr2.setRace(RaceEnum.Mongoloid);
                 dr2.setPhotoName(imgs.get(1));
                 dr2.setQualification("Good docctor,MD.");
-                
-                repository.save(dr1);
-                repository.saveAndFlush(dr2);
-                
+
+                drRepo.save(dr1);
+                drRepo.saveAndFlush(dr2);
+
                 // fetch all customers
                 log.info("Doctors found with findAll():");
                 log.info("-------------------------------");
-                for (Doctor customer : repository.findAll()) {
-                    log.info(customer.toString());
+                for (Doctor person : drRepo.findAll()) {
+                    log.info(person.toString());
                 }
                 log.info("");
 
                 // fetch an individual customer by ID
-                Doctor customer = repository.findOne(1L);
+                Doctor person = drRepo.findOne(1L);
                 log.info("Doctor found with findOne(1L):");
                 log.info("--------------------------------");
-                log.info(customer.toString());
+                log.info(person.toString());
                 log.info("");
 
                 // fetch customers by last name
-                log.info("Doctor found with findByLastNameStartsWithIgnoreCase('Bauer'):");
+                log.info("Doctor found with findByLastNameStartsWithIgnoreCase('Yew'):");
                 log.info("--------------------------------------------");
-                for (Doctor bauer : repository
-                        .findByLastNameStartsWithIgnoreCase("Bauer")) {
+                for (Doctor bauer : drRepo
+                        .findByLastNameStartsWithIgnoreCase("Yew")) {
                     log.info(bauer.toString());
                 }
                 log.info("");
             }
+
+            private void createPatients(List<String> imgs) {
+                Patient prsn1 = new Patient();
+                prsn1.setFirstName("Галина");
+                prsn1.setMiddleName("Василівна");
+                prsn1.setLastName("Омелянко");
+                prsn1.setBirthDate((new GregorianCalendar(1926, 12, 1)).getTime());
+                prsn1.setGender(GenderEnum.FEMALE);
+                prsn1.setRace(RaceEnum.Caucasian);
+                prsn1.setPhotoName(imgs.get(0));
+
+                Patient prs2 = new Patient();
+                prs2.setFirstName("Микола");
+                prs2.setMiddleName("Опанасович");
+                prs2.setLastName("Гриценко");
+                prs2.setBirthDate((new GregorianCalendar(1949, 12, 1)).getTime());
+                prs2.setGender(GenderEnum.MALE);
+                prs2.setRace(RaceEnum.Caucasian);
+                prs2.setPhotoName(imgs.get(1));
+
+                patRepo.save(prsn1);
+                patRepo.saveAndFlush(prs2);
+
+                // fetch all customers
+                log.info("Doctors found with findAll():");
+                log.info("-------------------------------");
+                for (Doctor person : drRepo.findAll()) {
+                    log.info(person.toString());
+                }
+                log.info("");
+
+                // fetch an individual customer by ID
+                Doctor person = drRepo.findOne(1L);
+                log.info("Doctor found with findOne(1L):");
+                log.info("--------------------------------");
+                log.info(person.toString());
+                log.info("");
+
+                // fetch customers by last name
+                log.info("Doctor found with findByLastNameStartsWithIgnoreCase('Yew'):");
+                log.info("--------------------------------------------");
+                for (Doctor bauer : drRepo
+                        .findByLastNameStartsWithIgnoreCase("Yew")) {
+                    log.info(bauer.toString());
+                }
+                log.info("");
+            }
+
         };
     }
 }
