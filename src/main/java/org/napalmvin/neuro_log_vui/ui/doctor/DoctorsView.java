@@ -22,8 +22,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.Date;
 import java.util.ResourceBundle;
-import org.napalmvin.neuro_log_vui.data.RaceEnum;
-import org.napalmvin.neuro_log_vui.data.GenderEnum;
+import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
+import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.ui.PathToImgConverter;
 

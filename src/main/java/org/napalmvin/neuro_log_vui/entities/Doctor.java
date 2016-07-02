@@ -6,8 +6,8 @@
 package org.napalmvin.neuro_log_vui.entities;
 
 import java.util.Date;
-import org.napalmvin.neuro_log_vui.data.RaceEnum;
-import org.napalmvin.neuro_log_vui.data.GenderEnum;
+import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
+import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
 
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -51,7 +51,7 @@ public class Doctor {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotEmpty

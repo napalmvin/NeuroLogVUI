@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.napalmvin.neuro_log_vui.data;
+package org.napalmvin.neuro_log_vui.entities.enums;
 
 /**
  *
  * @author LOL
  */
-public enum GenderEnum {
-  MALE,FEMALE;  
+public enum RaceEnum {
+  CAUCASIAN,AFROPOID,MONGOLOID;  
 }

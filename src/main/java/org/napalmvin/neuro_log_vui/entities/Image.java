@@ -6,6 +6,8 @@
 package org.napalmvin.neuro_log_vui.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
@@ -15,10 +17,12 @@ import javax.persistence.Lob;
  */
 @Entity
 public class Image {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String path;
     @Lob
-    private byte [] content;
+    private byte[] content;
 
     public Image(String path, byte[] content) {
         this.path = path;
@@ -27,7 +31,6 @@ public class Image {
 
     public Image() {
     }
-    
 
     public String getPath() {
         return path;
@@ -44,9 +47,5 @@ public class Image {
     public void setContent(byte[] content) {
         this.content = content;
     }
-    
-    
-    
-    
-    
+
 }

@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
-import org.napalmvin.neuro_log_vui.data.RaceEnum;
-import org.napalmvin.neuro_log_vui.data.GenderEnum;
+
 import org.napalmvin.neuro_log_vui.data.PatientRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.entities.Patient;
+import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
+import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class Application {
                 dr1.setLastName("Bauer");
                 dr1.setBirthDate((new GregorianCalendar(1987, 12, 1)).getTime());
                 dr1.setGender(GenderEnum.MALE);
-                dr1.setRace(RaceEnum.Caucasian);
+                dr1.setRace(RaceEnum.CAUCASIAN);
                 dr1.setPhotoName(imgs.get(0));
                 dr1.setQualification("Good docctor,MD.");
 
@@ -85,7 +86,7 @@ public class Application {
                 dr2.setLastName("Yew");
                 dr2.setBirthDate((new GregorianCalendar(1975, 12, 1)).getTime());
                 dr2.setGender(GenderEnum.FEMALE);
-                dr2.setRace(RaceEnum.Mongoloid);
+                dr2.setRace(RaceEnum.MONGOLOID);
                 dr2.setPhotoName(imgs.get(1));
                 dr2.setQualification("Good docctor,MD.");
 
@@ -101,8 +102,8 @@ public class Application {
                 log.info("");
 
                 // fetch an individual customer by ID
-                Doctor person = drRepo.findOne(1L);
-                log.info("Doctor found with findOne(1L):");
+                Doctor person = drRepo.findAll().get(0);
+                log.info("drRepo.findAll().get(0):");
                 log.info("--------------------------------");
                 log.info(person.toString());
                 log.info("");
@@ -124,7 +125,7 @@ public class Application {
                 prsn1.setLastName("Омелянко");
                 prsn1.setBirthDate((new GregorianCalendar(1926, 12, 1)).getTime());
                 prsn1.setGender(GenderEnum.FEMALE);
-                prsn1.setRace(RaceEnum.Caucasian);
+                prsn1.setRace(RaceEnum.CAUCASIAN);
                 prsn1.setPhotoName(imgs.get(0));
 
                 Patient prs2 = new Patient();
@@ -133,7 +134,7 @@ public class Application {
                 prs2.setLastName("Гриценко");
                 prs2.setBirthDate((new GregorianCalendar(1949, 12, 1)).getTime());
                 prs2.setGender(GenderEnum.MALE);
-                prs2.setRace(RaceEnum.Caucasian);
+                prs2.setRace(RaceEnum.CAUCASIAN);
                 prs2.setPhotoName(imgs.get(1));
 
                 patRepo.save(prsn1);
@@ -148,7 +149,7 @@ public class Application {
                 log.info("");
 
                 // fetch an individual customer by ID
-                Doctor person = drRepo.findOne(1L);
+                Doctor person = drRepo.findAll().get(0);
                 log.info("Doctor found with findOne(1L):");
                 log.info("--------------------------------");
                 log.info(person.toString());
