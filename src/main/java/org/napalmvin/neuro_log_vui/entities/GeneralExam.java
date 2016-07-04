@@ -40,16 +40,33 @@ public class GeneralExam {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-//    @NotNull
-//     //@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-//    @OneToMany(fetch = FetchType.EAGER)
-//    @JoinColumn(name = " private Long GENERAL_EXAM_ID;")
-//    private List<AerialExam> aerialExams = new ArrayList<>();
+    @Temporal(javax.persistence.TemporalType.DATE)
+    @NotNull
+    private Date taken;
+
+    @NotNull
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "GENERAL_EXAM_ID")
+    private List<AerialExam> aerialExams = new ArrayList<>();
+
+    public enum FieldsList {
+        id,
+        patient,
+        doctor,
+        taken,
+        aerialExams;
+    }
 
     public GeneralExam() {
     }
 
-    
+    public List<AerialExam> getAerialExams() {
+        return aerialExams;
+    }
+
+    public void setAerialExams(List<AerialExam> aerialExams) {
+        this.aerialExams = aerialExams;
+    }
 
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
@@ -62,10 +79,6 @@ public class GeneralExam {
     public void setTaken(Date taken) {
         this.taken = taken;
     }
-
-    @Temporal(javax.persistence.TemporalType.DATE)
-    @NotNull
-    private Date taken;
 
     public Long getId() {
         return id;
@@ -82,9 +95,5 @@ public class GeneralExam {
     public Date getTaken() {
         return taken;
     }
-
-    
-    
-    
 
 }

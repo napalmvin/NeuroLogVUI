@@ -23,7 +23,7 @@ import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PathToImgConverter implements Converter<Resource, String> {
+public class StringPathToImgConverter implements Converter<Resource, String> {
     
     @Autowired
     ImageRepository imgRepository;
@@ -45,11 +45,11 @@ public class PathToImgConverter implements Converter<Resource, String> {
             try {
                 Files.write(imgPath, one.getContent(),StandardOpenOption.WRITE);
             } catch (IOException ex) {
-                Logger.getLogger(PathToImgConverter.class.getName()).log(Level.SEVERE, value, ex);
+                Logger.getLogger(StringPathToImgConverter.class.getName()).log(Level.SEVERE, value, ex);
             }
         }
-        ExternalResource Res = new ExternalResource(IMAGE.getParentFolder()+value);
-        return Res;
+        ExternalResource res = new ExternalResource(IMAGE.getParentFolder()+value);
+        return res;
     }
 
     @Override

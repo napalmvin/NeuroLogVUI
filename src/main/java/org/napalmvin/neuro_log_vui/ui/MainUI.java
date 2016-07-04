@@ -26,7 +26,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
@@ -35,7 +34,6 @@ import org.napalmvin.neuro_log_vui.ui.vaadin.ValoMenuLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 @SpringUI()
 @Theme("mytheme")
@@ -82,7 +80,7 @@ public class MainUI extends UI {
         navigator.addProvider(viewProvider);
         final String f = Page.getCurrent().getUriFragment();
         if (f == null || f.equals("")) {
-            navigator.navigateTo("doctors");
+            navigator.navigateTo("generalExams");
         }
 
         navigator.addViewChangeListener(new ViewChangeListener() {
@@ -137,6 +135,7 @@ public class MainUI extends UI {
 
         menuItemsStrings.put("doctors", msg.getString("doctors"));
         menuItemsStrings.put("patients", msg.getString("patients"));
+        menuItemsStrings.put("generalExams", msg.getString("generalExams"));
     }
 
     private void addApplicationNameComponent() {

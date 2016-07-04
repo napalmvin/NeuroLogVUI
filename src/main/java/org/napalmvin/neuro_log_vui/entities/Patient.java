@@ -37,16 +37,6 @@ public class Patient {
         gender,
         race,
         photoName;
-
-        public static String[] getStringArray() {
-            FieldsList[] values = FieldsList.values();
-            String[] returnVal = new String[values.length];
-            for (int i = 0; i < values.length; i++) {
-                returnVal[i] = values[i].toString();
-            }
-            return returnVal;
-        }
-
     }
 
     @Id
