@@ -22,7 +22,7 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.ResourceBundle;
 import org.napalmvin.neuro_log_vui.data.PatientRepository;
 import org.napalmvin.neuro_log_vui.entities.Patient;
-import org.napalmvin.neuro_log_vui.ui.PathToImgConverter;
+import org.napalmvin.neuro_log_vui.ui.StringPathToImgConverter;
 
 @Theme("mytheme")
 @SpringView(name = "patients")
@@ -41,7 +41,7 @@ public class PatientsView extends VerticalLayout implements View {
     private final Button addNewBtn;
 
     private final ImageRenderer imgRndrr = new ImageRenderer();
-    private final PathToImgConverter converter = new PathToImgConverter();
+    private final StringPathToImgConverter converter = new StringPathToImgConverter();
 
     @Autowired
     public PatientsView(PatientRepository repo,ResourceBundle msg,PatientEditor editor) {
@@ -74,9 +74,12 @@ public class PatientsView extends VerticalLayout implements View {
                     repo.findByLastNameStartsWithIgnoreCase(text)));
         }
         //Set localized header(column names)
-        for (String key : Patient.FieldsList.getStringArray()) {
+        for (String key : Patient.FieldsList.valuesAsStrings()) {
             grid.getDefaultHeaderRow().getCell(key).setText(msg.getString(key));
         }
+        grid.setColumns(Patient.FieldsList.valuesAsStrings());
+        Grid.Column photo = grid.getColumn(Patient.FieldsList.photoName.name());
+        photo.setRenderer(imgRndrr, converter);
     }
     // end::listCustomers[]
 
@@ -116,9 +119,7 @@ public class PatientsView extends VerticalLayout implements View {
         grid.setImmediate(true);
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(100, Unit.PERCENTAGE);
-        grid.setColumns(Patient.FieldsList.getStringArray());
-        Grid.Column photo = grid.getColumn(Patient.FieldsList.photoName.name());
-        photo.setRenderer(imgRndrr, converter);
+        
 
         filter.setInputPrompt(msg.getString("filter_by_last_name"));
 

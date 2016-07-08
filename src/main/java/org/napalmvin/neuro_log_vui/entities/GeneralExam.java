@@ -5,11 +5,10 @@
  */
 package org.napalmvin.neuro_log_vui.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import org.napalmvin.neuro_log_vui.entities.enums.ExamTypeEnum;
 
 @Entity
 @Table(name = "GENERAL_EXAM")
@@ -47,7 +47,7 @@ public class GeneralExam {
     @NotNull
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "GENERAL_EXAM_ID")
-    private List<AerialExam> aerialExams = new ArrayList<>();
+    private List<AerialExam> aerialExams = new LinkedList<>();
 
     public enum FieldsList {
         id,
@@ -94,6 +94,17 @@ public class GeneralExam {
 
     public Date getTaken() {
         return taken;
+    }
+
+    public AerialExam getAerialExam(ExamTypeEnum type) {
+        AerialExam returnExam = null;
+        for (AerialExam aerEx : aerialExams) {
+            if (aerEx.getExamType().equals(type)) {
+                returnExam = aerEx;
+            }
+
+        }
+        return null;
     }
 
 }

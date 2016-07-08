@@ -5,6 +5,7 @@
  */
 package org.napalmvin.neuro_log_vui.entities;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,6 +21,12 @@ import org.napalmvin.neuro_log_vui.entities.enums.ExamTypeEnum;
 @Table(name = "AERIAL_EXAM")
 public class AerialExam {
 
+    public enum FieldsList {
+        id,
+        examType,
+        generalExamId,
+        comments;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -28,7 +35,10 @@ public class AerialExam {
     @Enumerated(EnumType.STRING)
     private ExamTypeEnum examType;
     
-    @Column(nullable = true,length = 255)
+    @Column(name = "GENERAL_EXAM_ID")
+    private Long generalExamId;
+    
+    @Column(nullable = false,length = 255)
     private String comments;
     
     public AerialExam() {
@@ -53,6 +63,40 @@ public class AerialExam {
     public String getComments() {
         return comments;
     }
+
+    public Long getGeneralExamId() {
+        return generalExamId;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.examType);
+        hash = 83 * hash + Objects.hashCode(this.generalExamId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AerialExam other = (AerialExam) obj;
+        if (this.examType != other.examType) {
+            return false;
+        }
+        if (!Objects.equals(this.generalExamId, other.generalExamId)) {
+            return false;
+        }
+        return true;
+    }
+    
     
 
 

@@ -39,7 +39,7 @@ public class GeneralExamsView extends VerticalLayout implements View {
     private ResourceBundle msg;
     private final GeneralExamRepository repo;
 
-    private DoctorEditor editor;
+    private GeneralExamEditor editor;
 
     private final Window popupWindow;
 
@@ -50,10 +50,12 @@ public class GeneralExamsView extends VerticalLayout implements View {
     private final ImageRenderer imgRndrr = new ImageRenderer();
     private final StringPathToImgConverter converter = new StringPathToImgConverter();
 
-    private final String[] NESTED_PROPS = {"doctor.firstName", "doctor.lastName", "patient.firstName", "patient.lastName", "patient.photoName"};
+    private final static String[] NESTED_PROPS = {"doctor.firstName", "doctor.lastName", "patient.firstName", "patient.lastName", "patient.photoName"};
+    private final static String IMAGE_COLUMN = "image";
+    private final static String NEW_GENRAL_EXAM = "new_general_exam";
 
     @Autowired
-    public GeneralExamsView(GeneralExamRepository repo, ResourceBundle msg, DoctorEditor editor) {
+    public GeneralExamsView(GeneralExamRepository repo, ResourceBundle msg, GeneralExamEditor editor) {
         this.setImmediate(true);
         this.msg = msg;
         this.editor = editor;
@@ -61,9 +63,8 @@ public class GeneralExamsView extends VerticalLayout implements View {
 //        this.editor = editor;
         this.table = new Table();
         this.filter = new TextField();
-        this.addNewBtn = new Button(msg.getString("new_general_exam"), FontAwesome.PLUS);
-
-        addNewBtn.setId("new_general_exam");
+        this.addNewBtn = new Button(msg.getString(NEW_GENRAL_EXAM), FontAwesome.PLUS);
+        this.addNewBtn.setId(NEW_GENRAL_EXAM);
         this.popupWindow = new Window();
 
         initMainUI();
@@ -80,8 +81,8 @@ public class GeneralExamsView extends VerticalLayout implements View {
             biContainer.addNestedContainerProperty(property);
         }
 
-        biContainer.removeContainerProperty("doctor");
-        biContainer.removeContainerProperty("patient");
+        biContainer.removeContainerProperty(GeneralExam.FieldsList.doctor.name());
+        biContainer.removeContainerProperty(GeneralExam.FieldsList.patient.name());
 
         GeneratedPropertyContainer gCont = new GeneratedPropertyContainer(biContainer);
 
@@ -117,8 +118,8 @@ public class GeneralExamsView extends VerticalLayout implements View {
 //        });
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> {
-            Doctor dr = new Doctor();
-            editor.editDoctor(dr);
+            GeneralExam genEx = new GeneralExam();
+            editor.edit(genEx);
             UI.getCurrent().addWindow(popupWindow);
 
         });
@@ -138,8 +139,6 @@ public class GeneralExamsView extends VerticalLayout implements View {
 //       
 
         filter.setInputPrompt(msg.getString("filter_by_last_name"));
-
-        addNewBtn.setId("new_doctor");
 
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
         actions.setSpacing(true);
@@ -166,14 +165,16 @@ public class GeneralExamsView extends VerticalLayout implements View {
     }
 
     private void addGeneratedColumns() {
-        table.addGeneratedColumn("image", (Table source, Object itemId, Object columnId) -> {
+        table.addGeneratedColumn(IMAGE_COLUMN, (Table source, Object itemId, Object columnId) -> {
             String imagePath = (String) source.getItem(itemId)
                     .getItemProperty(NESTED_PROPS[4]).getValue();
             return new Embedded("", converter.convertToPresentation(imagePath, Resource.class, msg.getLocale()));
         });
+        table.setColumnWidth(IMAGE_COLUMN, 210);
 
         for (ExamTypeEnum enumType : ExamTypeEnum.values()) {
             String key = enumType.toString();
+
             table.addGeneratedColumn(key, (Table source, Object itemId, Object columnId) -> {
                 Property prop = source.getItem(itemId).getItemProperty(GeneralExam.FieldsList.aerialExams.toString()
                 );
