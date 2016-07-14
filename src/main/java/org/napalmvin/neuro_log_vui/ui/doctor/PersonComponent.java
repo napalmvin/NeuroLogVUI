@@ -6,41 +6,49 @@
 package org.napalmvin.neuro_log_vui.ui.doctor;
 
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
-import org.napalmvin.neuro_log_vui.data.DoctorRepository;
-import org.napalmvin.neuro_log_vui.entities.Doctor;
+import org.napalmvin.neuro_log_vui.data.PersonRepository;
+import org.napalmvin.neuro_log_vui.entities.Person;
+import org.napalmvin.neuro_log_vui.ui.PersonToStringConverter;
 
 /**
  *
  * @author LOL
+ * @param <T>
  */
-public class PersonComponent extends CustomField<Doctor> {
+public  class PersonComponent<T extends Person> extends CustomField<T> {
 
     private final Button button = new Button(FontAwesome.SEARCH);
-    private boolean isReqired = false;
-    private final TextField textField = new TextField();
-    private ResourceBundle msg;
-    private Doctor doctor;
+    private boolean isReqired;
+    private final TextField textField;
+    private final ResourceBundle msg;
+    private T person;
     private final Window popupWindow;
-    private DoctorsListPanel docList;
+    private PersonsListPanel<T> personsList;
+    private Class<T>type;
+    
+    private PersonToStringConverter<T> conv;
 
-    public PersonComponent(ResourceBundle msg, DoctorRepository repo) {
+    public PersonComponent(ResourceBundle msg, PersonRepository<T> repo,Class<T>type) {
+        this.textField = new TextField();
+        this.isReqired = false;
         this.msg = msg;
-        docList = new DoctorsListPanel(repo, msg);
+        this.type=type;
+        personsList = new PersonsListPanel<T>(repo, msg,type);
 
         button.setCaption(msg.getString("find"));
         this.popupWindow = new Window();
-        popupWindow.setContent(docList);
+        popupWindow.setContent(personsList);
         popupWindow.setModal(true);
         popupWindow.setImmediate(true);
         popupWindow.setHeight(85, Unit.PERCENTAGE);
@@ -50,25 +58,27 @@ public class PersonComponent extends CustomField<Doctor> {
         button.addClickListener(e -> {
             UI.getCurrent().addWindow(popupWindow);
         });
-        docList.setSelectionHandler((value) -> {
+        personsList.setSelectionHandler((value) -> {
             if (value == null) {
                 Notification.show(msg.getString("select_row_please"), Notification.Type.WARNING_MESSAGE);
             } else {
-                doctor = (Doctor) value;
+                person = (T) value;
+                this.setInternalValue(person);
                 textField.setReadOnly(false);
-                textField.setValue(doctor.getFirstName()+" "+doctor.getLastName());
+                textField.setValue(person.getFirstName()+" "+person.getLastName());
                 textField.setReadOnly(true);
                 UI.getCurrent().removeWindow(popupWindow);
             }
 
         });
+        conv=new PersonToStringConverter<>(type);
     }
 
     @Override
     protected Component initContent() {
         HorizontalLayout hLayout = new HorizontalLayout();
         hLayout.addComponents(textField, button);
-        hLayout.setMargin(new MarginInfo(true, true, true, false)); // Very useful
+        hLayout.setMargin(new MarginInfo(false, true, false, false)); // Very useful
 
         // Compose from multiple components
         // Set the size as undefined at all levels
@@ -80,8 +90,26 @@ public class PersonComponent extends CustomField<Doctor> {
     }
 
     @Override
-    public Class<? extends Doctor> getType() {
-        return Doctor.class;
+    public Class<? extends T> getType() {
+        return type;
     }
+
+    @Override
+    protected void setInternalValue(T newValue) {
+        String presentation = conv.convertToPresentation(newValue,conv.getPresentationType() , null);
+        textField.setReadOnly(false);
+        textField.setValue(presentation);
+        textField.setReadOnly(true);
+        super.setInternalValue(newValue); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+
+    
+    
+    
+
+    
 
 }

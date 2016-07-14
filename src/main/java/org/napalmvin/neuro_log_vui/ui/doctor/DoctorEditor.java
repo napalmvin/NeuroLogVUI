@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
@@ -25,13 +24,13 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javax.validation.Valid;
-import org.napalmvin.neuro_log_vui.Constants;
-import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
+import org.napalmvin.neuro_log_vui.PathConstants;
+import static org.napalmvin.neuro_log_vui.PathConstants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
 import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
+import org.napalmvin.neuro_log_vui.ui.ChangeHandler;
 import org.napalmvin.neuro_log_vui.ui.UploadReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,7 +218,7 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
     }
 
     @Override
-    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
+    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, PathConstants.Type type) {
         photoName.setValue(fileName);
 
         progressBar.setVisible(false);
@@ -228,15 +227,12 @@ public class DoctorEditor extends Panel implements UploadReceiver.AfterUploadSuc
         image.setVisible(true);
     }
 
-    public interface ChangeHandler {
-
-        void onChange();
-    }
-
     public void setChangeHandler(ChangeHandler h) {
         // ChangeHandler is notified when either save or delete
         // is clicked
-        save.addClickListener(e -> h.onChange());
+        save.addClickListener(e ->{
+            h.onChange();
+                });
         delete.addClickListener(e -> h.onChange());
         cancel.addClickListener(e -> h.onChange());
     }

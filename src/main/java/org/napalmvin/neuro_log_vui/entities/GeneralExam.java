@@ -5,6 +5,7 @@
  */
 package org.napalmvin.neuro_log_vui.entities;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.napalmvin.neuro_log_vui.entities.enums.ExamTypeEnum;
 
@@ -26,6 +28,14 @@ import org.napalmvin.neuro_log_vui.entities.enums.ExamTypeEnum;
 @Table(name = "GENERAL_EXAM")
 public class GeneralExam {
 
+    @Transient public static final String ID = "id";
+    @Transient public static final String PATIENT = "patient";
+    @Transient public static final String DOCTOR = "doctor";
+    @Transient public static final String TAKEN = "taken";
+    @Transient public static final String AERIAL_EXAMS = "aerialExams";
+
+    @Transient public static final String[] FIELD_LIST={ID,PATIENT,DOCTOR,TAKEN,AERIAL_EXAMS};
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -49,19 +59,27 @@ public class GeneralExam {
     @JoinColumn(name = "GENERAL_EXAM_ID")
     private List<AerialExam> aerialExams = new LinkedList<>();
 
-    public enum FieldsList {
-        id,
-        patient,
-        doctor,
-        taken,
-        aerialExams;
-    }
 
     public GeneralExam() {
     }
 
     public List<AerialExam> getAerialExams() {
-        return aerialExams;
+        return Collections.unmodifiableList(aerialExams);
+    }
+
+    public void removeEmptyAerialExams() {
+        for (int i = 0; i < aerialExams.size(); i++) {
+            AerialExam aerExam = aerialExams.get(i);
+            if (aerExam.getComments() == null || aerExam.getComments().isEmpty()) {
+                aerialExams.remove(i);
+                i--;
+            }
+        }
+    }
+
+    public void addAerialExam(AerialExam aerialExam) {
+        aerialExams.add(aerialExam);
+
     }
 
     public void setAerialExams(List<AerialExam> aerialExams) {
@@ -97,10 +115,9 @@ public class GeneralExam {
     }
 
     public AerialExam getAerialExam(ExamTypeEnum type) {
-        AerialExam returnExam = null;
         for (AerialExam aerEx : aerialExams) {
             if (aerEx.getExamType().equals(type)) {
-                returnExam = aerEx;
+                return aerEx;
             }
 
         }

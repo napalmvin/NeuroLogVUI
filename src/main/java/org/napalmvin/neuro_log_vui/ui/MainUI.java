@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
-import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
+import static org.napalmvin.neuro_log_vui.PathConstants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.error.CustomErrorHandler;
 import org.napalmvin.neuro_log_vui.ui.vaadin.ValoMenuLayout;
 import org.slf4j.Logger;

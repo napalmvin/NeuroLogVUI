@@ -74,11 +74,11 @@ public class PatientsView extends VerticalLayout implements View {
                     repo.findByLastNameStartsWithIgnoreCase(text)));
         }
         //Set localized header(column names)
-        for (String key : Patient.FieldsList.valuesAsStrings()) {
+        for (String key : Patient.FIELD_LIST) {
             grid.getDefaultHeaderRow().getCell(key).setText(msg.getString(key));
         }
-        grid.setColumns(Patient.FieldsList.valuesAsStrings());
-        Grid.Column photo = grid.getColumn(Patient.FieldsList.photoName.name());
+        grid.setColumns(Patient.FIELD_LIST);
+        Grid.Column photo = grid.getColumn(Patient.PHOTO_NAME);
         photo.setRenderer(imgRndrr, converter);
     }
     // end::listCustomers[]

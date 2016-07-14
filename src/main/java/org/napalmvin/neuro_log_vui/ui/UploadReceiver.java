@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.napalmvin.neuro_log_vui.Constants.Type;
+import org.napalmvin.neuro_log_vui.PathConstants.Type;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Image;
 import org.slf4j.Logger;

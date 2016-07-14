@@ -1,12 +1,12 @@
 package org.napalmvin.neuro_log_vui.ui.exams;
 
-import org.napalmvin.neuro_log_vui.ui.doctor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -21,16 +21,16 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.napalmvin.neuro_log_vui.data.GeneralExamRepository;
 import org.napalmvin.neuro_log_vui.entities.AerialExam;
-import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.entities.GeneralExam;
 import org.napalmvin.neuro_log_vui.entities.enums.ExamTypeEnum;
 import org.napalmvin.neuro_log_vui.ui.StringPathToImgConverter;
+import org.springframework.util.StringUtils;
 
 @Theme("mytheme")
 @SpringView(name = "generalExams")
@@ -47,7 +47,6 @@ public class GeneralExamsView extends VerticalLayout implements View {
     private final TextField filter;
     private final Button addNewBtn;
 
-    private final ImageRenderer imgRndrr = new ImageRenderer();
     private final StringPathToImgConverter converter = new StringPathToImgConverter();
 
     private final static String[] NESTED_PROPS = {"doctor.firstName", "doctor.lastName", "patient.firstName", "patient.lastName", "patient.photoName"};
@@ -70,68 +69,13 @@ public class GeneralExamsView extends VerticalLayout implements View {
         initMainUI();
         initEditorWindow();
         bindListeners();
-
-        // Initialize listing
     }
 
-    // tag::listCustomers[]
-    private void listEntities(String text) {
-        BeanItemContainer biContainer = new BeanItemContainer(GeneralExam.class, repo.findAll());
-        for (String property : NESTED_PROPS) {
-            biContainer.addNestedContainerProperty(property);
-        }
-
-        biContainer.removeContainerProperty(GeneralExam.FieldsList.doctor.name());
-        biContainer.removeContainerProperty(GeneralExam.FieldsList.patient.name());
-
-        GeneratedPropertyContainer gCont = new GeneratedPropertyContainer(biContainer);
-
-        table.setContainerDataSource(gCont);
-        Object[] itemIds = biContainer.getItem(biContainer.firstItemId()).getItemPropertyIds().toArray();
-//        table.setConverter("patient.photoName", converter);
-        table.setVisibleColumns(Arrays.copyOfRange(itemIds, 1, itemIds.length - 1));
-
-        addGeneratedColumns();
-
-        //Set localized header(column names)
-        for (String key : table.getColumnHeaders()) {
-            table.setColumnHeader(key, msg.getString(key));
-        }
-
-    }
-    // end::listCustomers[]
-
-    private void bindListeners() {
-        filter.addTextChangeListener(e -> listEntities(e.getText()));
-
-//        table.addSelectionListener(new SelectionEvent.SelectionListener() {
-//            @Override
-//            public void select(SelectionEvent e) {
-//                if (e.getSelected().isEmpty()) {
-////                editor.setVisible(false);
-//                    UI.getCurrent().removeWindow(popupWindow);
-//                } else {
-//                    editor.editDoctor((Doctor) table.getSelectedRow());
-//                    UI.getCurrent().addWindow(popupWindow);
-//                }
-//            }
-//        });
-        // Instantiate and edit new Customer the new button is clicked
-        addNewBtn.addClickListener(e -> {
-            GeneralExam genEx = new GeneralExam();
-            editor.edit(genEx);
-            UI.getCurrent().addWindow(popupWindow);
-
-        });
-
-        // Listen changes made by the editor, refresh data from backend
-        editor.setChangeHandler(() -> {
-            UI.getCurrent().removeWindow(popupWindow);
-            listEntities(filter.getValue());
-        });
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        listEntities(null);
     }
 
-    @SuppressWarnings("all")
     private void initMainUI() {
         table.setImmediate(true);
         table.setWidth(100, Unit.PERCENTAGE);
@@ -152,6 +96,37 @@ public class GeneralExamsView extends VerticalLayout implements View {
         setSpacing(true);
     }
 
+    private void bindListeners() {
+        filter.addTextChangeListener(e -> listEntities(e.getText()));
+
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent e) {
+                if (e.getItem() == null) {
+                    editor.setVisible(false);
+                    UI.getCurrent().removeWindow(popupWindow);
+                } else if (!popupWindow.isAttached()) {
+                    editor.edit((GeneralExam) e.getItemId());
+                    UI.getCurrent().addWindow(popupWindow);
+                }
+            }
+        });
+
+        // Instantiate and edit new Customer the new button is clicked
+        addNewBtn.addClickListener(e -> {
+            GeneralExam genEx = new GeneralExam();
+            editor.edit(genEx);
+            UI.getCurrent().addWindow(popupWindow);
+
+        });
+
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            UI.getCurrent().removeWindow(popupWindow);
+            listEntities(filter.getValue());
+        });
+    }
+
     private void initEditorWindow() {
         popupWindow.setContent(editor);
         popupWindow.setModal(true);
@@ -159,9 +134,52 @@ public class GeneralExamsView extends VerticalLayout implements View {
         popupWindow.setHeight(85, Unit.PERCENTAGE);
     }
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-        listEntities(null);
+    // tag::listCustomers[]
+    private void listEntities(String text) {
+        BeanItemContainer biContainer = null;
+        if (StringUtils.isEmpty(text)) {
+            biContainer = new BeanItemContainer(GeneralExam.class, repo.findAll());
+        } else {
+            //TODO Implement 
+            biContainer = new BeanItemContainer(GeneralExam.class, repo.findAll());
+        }
+
+        for (String property : NESTED_PROPS) {
+            biContainer.addNestedContainerProperty(property);
+        }
+        GeneratedPropertyContainer gCont = new GeneratedPropertyContainer(biContainer);
+
+        table.setContainerDataSource(gCont);
+
+        //To avoid collections and service classes being depicted
+        //Check wheathe generated columns are present
+        if (table.getColumnHeader(IMAGE_COLUMN).equals(IMAGE_COLUMN)) {
+            addGeneratedColumns();
+            //Set localized header(column names)
+            for (String key : table.getColumnHeaders()) {
+                table.setColumnHeader(key, msg.getString(key));
+            }
+        }
+        setVisibleColums();
+
+    }
+
+    private void setVisibleColums() {
+        LinkedList<Object> filteredItemIds = new LinkedList<>();
+        filteredItemIds.add(GeneralExam.ID);
+        filteredItemIds.add(GeneralExam.TAKEN);
+
+        //Avoidin  photo name got into table
+        for (int i = 0; i < NESTED_PROPS.length - 1; i++) {
+            filteredItemIds.add(NESTED_PROPS[i]);
+            
+        }
+
+        filteredItemIds.add(IMAGE_COLUMN);
+        for (ExamTypeEnum enumType : ExamTypeEnum.values()) {
+            filteredItemIds.add(enumType.name());
+        }
+        table.setVisibleColumns(filteredItemIds.toArray());
     }
 
     private void addGeneratedColumns() {
@@ -173,11 +191,10 @@ public class GeneralExamsView extends VerticalLayout implements View {
         table.setColumnWidth(IMAGE_COLUMN, 210);
 
         for (ExamTypeEnum enumType : ExamTypeEnum.values()) {
-            String key = enumType.toString();
+            String key = enumType.name();
 
             table.addGeneratedColumn(key, (Table source, Object itemId, Object columnId) -> {
-                Property prop = source.getItem(itemId).getItemProperty(GeneralExam.FieldsList.aerialExams.toString()
-                );
+                Property prop = source.getItem(itemId).getItemProperty(GeneralExam.AERIAL_EXAMS);
                 List<AerialExam> aerExams = (List<AerialExam>) prop.getValue();
 
                 for (AerialExam aerExam : aerExams) {

@@ -9,44 +9,38 @@ import java.util.Date;
 import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
 import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
 
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.metawidget.inspector.annotation.UiHidden;
-import org.metawidget.inspector.annotation.UiRequired;
-import static org.napalmvin.neuro_log_vui.entities.Doctor.FieldsList.values;
 
 @Entity
 public abstract class Person {
 
-    public enum FieldsList {
-        id,
-        firstName,
-        middleName,
-        lastName,
-        birthDate,
-        gender,
-        race,
-        photoName;
-
-        public static String[] valuesAsStrings() {
-            int size = values().length;
-            String[] resultArr = new String[size];
-            for (int i = 0; i < size; i++) {
-                resultArr[i] = values()[i].name();
-            }
-            return resultArr;
-        }
-    }
+    @Transient public static final String ID = "id";
+    @Transient public static final String FIRST_NAME = "firstName";
+    @Transient public static final String MIDLLE_NAME = "middleName";
+    @Transient public static final String LAST_NAME = "lastName";
+    @Transient public static final String BIRTH_DATE = "birthDate";
+    @Transient public static final String GENDER = "gender";
+    @Transient public static final String RACE = "race";
+    @Transient public static final String PHOTO_NAME = "photoName";
+    @Transient public static final String[] FIELD_LIST = {
+        ID,
+        FIRST_NAME,
+        MIDLLE_NAME,
+        LAST_NAME,
+        BIRTH_DATE,
+        GENDER,
+        RACE,
+        PHOTO_NAME};
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -84,15 +78,6 @@ public abstract class Person {
     public Person() {
     }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    @UiHidden
     public Long getId() {
         return id;
     }
@@ -101,86 +86,55 @@ public abstract class Person {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Date getBirthDate() {
         return birthDate;
     }
 
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
     public GenderEnum getGender() {
         return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
     }
 
     public RaceEnum getRace() {
         return race;
     }
 
-    public String getPhotoName() {
-        return photoName;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.firstName);
-        hash = 83 * hash + Objects.hashCode(this.lastName);
-        hash = 83 * hash + Objects.hashCode(this.birthDate);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Person other = (Person) obj;
-        if (!Objects.equals(this.firstName, other.firstName)) {
-            return false;
-        }
-        if (!Objects.equals(this.lastName, other.lastName)) {
-            return false;
-        }
-        if (!Objects.equals(this.birthDate, other.birthDate)) {
-            return false;
-        }
-        return true;
-    }
-
-    @UiRequired
-    public void setFirstName(String first_name) {
-        this.firstName = first_name;
-    }
-
-    @UiRequired
-    public void setLastName(String last_name) {
-        this.lastName = last_name;
-    }
-
-    @UiRequired
-    public void setBirthDate(Date birth_date) {
-        this.birthDate = birth_date;
-    }
-
-    @UiRequired
-    public void setGender(GenderEnum sex) {
-        this.gender = sex;
-    }
-
-    @UiRequired
     public void setRace(RaceEnum race) {
         this.race = race;
     }
 
-    @UiRequired
-    public void setPhotoName(String photo) {
-        this.photoName = photo;
+    public String getPhotoName() {
+        return photoName;
+    }
+
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
     }
 }

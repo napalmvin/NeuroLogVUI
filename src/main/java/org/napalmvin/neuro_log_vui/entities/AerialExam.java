@@ -39,7 +39,7 @@ public class AerialExam {
     private Long generalExamId;
     
     @Column(nullable = false,length = 255)
-    private String comments;
+    private String comments="";
     
     public AerialExam() {
     }

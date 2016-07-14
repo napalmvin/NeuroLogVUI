@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
+import static org.napalmvin.neuro_log_vui.PathConstants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.data.AerialExamRepository;
 import org.napalmvin.neuro_log_vui.data.GeneralExamRepository;
 

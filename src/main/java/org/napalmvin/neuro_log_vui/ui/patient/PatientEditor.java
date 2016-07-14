@@ -24,12 +24,13 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
-import org.napalmvin.neuro_log_vui.Constants;
-import static org.napalmvin.neuro_log_vui.Constants.Type.IMAGE;
+import org.napalmvin.neuro_log_vui.PathConstants;
+import static org.napalmvin.neuro_log_vui.PathConstants.Type.IMAGE;
 import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
 import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
 import org.napalmvin.neuro_log_vui.data.ImageRepository;
 import org.napalmvin.neuro_log_vui.entities.Patient;
+import org.napalmvin.neuro_log_vui.ui.ChangeHandler;
 import org.napalmvin.neuro_log_vui.ui.UploadReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,7 +218,7 @@ public class PatientEditor extends Panel implements UploadReceiver.AfterUploadSu
     }
 
     @Override
-    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, Constants.Type type) {
+    public void afterUploadSuceeded(Upload.SucceededEvent event, String fileName, PathConstants.Type type) {
         photoName.setValue(fileName);
 
         progressBar.setVisible(false);
@@ -226,10 +227,7 @@ public class PatientEditor extends Panel implements UploadReceiver.AfterUploadSu
         image.setVisible(true);
     }
 
-    public interface ChangeHandler {
-
-        void onChange();
-    }
+   
 
     public void setChangeHandler(ChangeHandler h) {
         // ChangeHandler is notified when either save or delete

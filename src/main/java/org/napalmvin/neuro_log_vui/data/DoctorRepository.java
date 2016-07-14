@@ -1,10 +1,7 @@
 package org.napalmvin.neuro_log_vui.data;
 
-import java.util.List;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+public interface DoctorRepository extends PersonRepository<Doctor> {
 
-	List<Doctor> findByLastNameStartsWithIgnoreCase(String lastName);
 }

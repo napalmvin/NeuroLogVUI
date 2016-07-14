@@ -19,6 +19,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import org.napalmvin.neuro_log_vui.data.AerialExamRepository;
 import org.napalmvin.neuro_log_vui.data.GeneralExamRepository;
 import org.napalmvin.neuro_log_vui.entities.AerialExam;
 import org.napalmvin.neuro_log_vui.entities.GeneralExam;
@@ -27,6 +29,7 @@ import org.napalmvin.neuro_log_vui.ui.AppFieldFactory;
 import org.napalmvin.neuro_log_vui.ui.ChangeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 /**
  * A simple example to introduce building forms. As your real application is
@@ -43,12 +46,13 @@ import org.slf4j.LoggerFactory;
 public class GeneralExamEditor extends Panel {
 
     private final ResourceBundle msg;
-    private final GeneralExamRepository repo;
+    private final GeneralExamRepository repoGenEx;
+    private final AerialExamRepository repoAerEx;
     private AppFieldFactory appFieldFactory;
 
-    private GeneralExam genEx;
+    private GeneralExam generalExam;
 
-    FormLayout form;
+    FormLayout formLayout;
     FieldGroup fieldGroup;
     Button save;
     Button cancel;
@@ -60,24 +64,26 @@ public class GeneralExamEditor extends Panel {
 
     @Autowired
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public GeneralExamEditor(GeneralExamRepository doctorRepo, 
+    public GeneralExamEditor(GeneralExamRepository repoGenEx,
+            AerialExamRepository repoAerEx,
             ResourceBundle msg,
             AppFieldFactory appFieldFactory) {
         this.msg = msg;
-        this.repo = doctorRepo;
-        this.appFieldFactory=appFieldFactory;
+        this.repoGenEx = repoGenEx;
+        this.repoAerEx = repoAerEx;
+        this.appFieldFactory = appFieldFactory;
         createUI();
         initUI();
     }
 
     private void createUI() {
-        form = new FormLayout();
+        formLayout = new FormLayout();
         this.delete = new Button(msg.getString("delete"), FontAwesome.TRASH_O);
         this.cancel = new Button(msg.getString("cancel"), FontAwesome.RECYCLE);
         this.save = new Button(msg.getString("save"), FontAwesome.SAVE);
         this.actions = new HorizontalLayout(save, cancel, delete);
 
-        this.vl = new VerticalLayout(form, actions);
+        this.vl = new VerticalLayout(formLayout, actions);
 
     }
 
@@ -99,26 +105,41 @@ public class GeneralExamEditor extends Panel {
 
         // wire action buttons to save, delete and reset
         save.addClickListener(e -> {
-            repo.save(genEx);
+            try {
+//                fieldGroup.commit();
+                for (Field f : fieldGroup.getFields()) {
+                    if (f.getValue() != null) {
+                        f.commit();
+                    }
+                }
+                //Todo refactoring redundant unchanged entities commit
+                repoAerEx.save(generalExam.getAerialExams());
+                repoAerEx.flush();
+                generalExam.removeEmptyAerialExams();
+                repoGenEx.save(generalExam);
+            } catch (Exception ex) {
+                LOG.error("", ex);
+            }
+
         });
         delete.addClickListener(e -> {
-            repo.delete(genEx);
+            repoGenEx.delete(generalExam);
         });
         cancel.addClickListener(e -> {
-            edit(genEx);
+            edit(generalExam);
         });
 
         setVisible(false);
     }
 
-    public final void edit(GeneralExam genEx) {
-        final boolean persisted = genEx.getId() != null;
+    public final void edit(GeneralExam genExam) {
+        final boolean persisted = genExam.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
-            this.genEx = repo.findOne(genEx.getId());
+            this.generalExam = repoGenEx.findOne(genExam.getId());
 
         } else {
-            this.genEx = genEx;
+            this.generalExam = genExam;
 
         }
 
@@ -126,33 +147,40 @@ public class GeneralExamEditor extends Panel {
         // Could also use annotation or "manual binding" or programmatically
         // moving values from fields to entities before saving
 //        bindFieldsUnbuffered = BeanFieldGroup.bindFieldsUnbuffered(genEx, this);
-        BeanItem beanItem = new BeanItem(this.genEx);
-        List<AerialExam> aerialExams = genEx.getAerialExams();
+        BeanItem beanItem = new BeanItem(generalExam);
         for (ExamTypeEnum key : ExamTypeEnum.values()) {
-            AerialExam aerEx = genEx.getAerialExam(key);
+            AerialExam aerEx = generalExam.getAerialExam(key);
             if (aerEx == null) {
                 aerEx = new AerialExam();
                 aerEx.setExamType(key);
                 aerEx.setComments("");
-                genEx.getAerialExams().add(aerEx);
+                generalExam.addAerialExam(aerEx);
             }
             beanItem.addItemProperty(key.name(),
-                    new MethodProperty<AerialExam>(aerEx,AerialExam.FieldsList.comments.name()));
+                    new MethodProperty<AerialExam>(aerEx, AerialExam.FieldsList.comments.name()));
         }
-        fieldGroup=new FieldGroup();
+        formLayout.removeAllComponents();
+        fieldGroup = new FieldGroup();
+
         fieldGroup.setFieldFactory(appFieldFactory);
-        beanItem.removeItemProperty(GeneralExam.FieldsList.aerialExams.name());
-         beanItem.removeItemProperty(GeneralExam.FieldsList.id.name());
         fieldGroup.setItemDataSource(beanItem);
         for (Object itemPropertyId : beanItem.getItemPropertyIds()) {
-            Field f = fieldGroup.buildAndBind(msg.getString(itemPropertyId.toString()),
-                    itemPropertyId);
-            if(itemPropertyId.equals(GeneralExam.FieldsList.doctor.name()) || 
-                    itemPropertyId.equals(GeneralExam.FieldsList.patient.name())){
-                f.setRequired(true);
-            }
+            try {
+                if (GeneralExam.AERIAL_EXAMS.equals(itemPropertyId)
+                        || GeneralExam.ID.equals(itemPropertyId)) {
+                    continue;
+                }
+                Field f = fieldGroup.buildAndBind(msg.getString(itemPropertyId.toString()),
+                        itemPropertyId);
+                if (itemPropertyId.equals(GeneralExam.DOCTOR)
+                        || itemPropertyId.equals(GeneralExam.PATIENT)) {
+                    f.setRequired(true);
+                }
 
-            form.addComponent(f);
+                formLayout.addComponent(f);
+            } catch (Exception ex) {
+                LOG.error(Marker.ANY_NON_NULL_MARKER, "Error while binding :" + itemPropertyId, ex);
+            }
         }
 
 //        setSizeFull();
@@ -163,7 +191,6 @@ public class GeneralExamEditor extends Panel {
         // Select all text in firstName field automatically
     }
 
-    
     public void setChangeHandler(ChangeHandler h) {
         // ChangeHandler is notified when either save or delete
         // is clicked
