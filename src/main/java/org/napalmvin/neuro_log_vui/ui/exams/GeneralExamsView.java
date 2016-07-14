@@ -141,7 +141,7 @@ public class GeneralExamsView extends VerticalLayout implements View {
             biContainer = new BeanItemContainer(GeneralExam.class, repo.findAll());
         } else {
             //TODO Implement 
-            biContainer = new BeanItemContainer(GeneralExam.class, repo.findAll());
+            biContainer = new BeanItemContainer(GeneralExam.class, repo.findByPatientLastNameStartsWithIgnoreCase(text));
         }
 
         for (String property : NESTED_PROPS) {

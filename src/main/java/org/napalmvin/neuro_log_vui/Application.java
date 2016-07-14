@@ -175,33 +175,59 @@ public class Application {
             }
 
             private void createExams() {
-                GeneralExam genEx1=new GeneralExam();
-                
+                GeneralExam genEx1 = new GeneralExam();
+
                 genEx1.setDoctor(docRepo.findAll().get(0));
                 genEx1.setPatient(patRepo.findAll().get(0));
                 genEx1.setTaken(new Date());
-                
-                AerialExam aerEx1=new AerialExam();
+
+                AerialExam aerEx1 = new AerialExam();
                 aerEx1.setExamType(ExamTypeEnum.GENERAL_APPEARANCE);
                 aerEx1.setComments("На вигляд здорова як корова.");
-               
-                
-                AerialExam aerEx2=new AerialExam();
+
+                AerialExam aerEx2 = new AerialExam();
                 aerEx2.setExamType(ExamTypeEnum.PELVIC);
                 aerEx2.setComments("Норма");
-                
-                AerialExam aerEx3=new AerialExam();
+
+                AerialExam aerEx3 = new AerialExam();
                 aerEx3.setExamType(ExamTypeEnum.CARDIAC);
                 aerEx3.setComments("Шуми в сердці.");
-                
-                List<AerialExam> aerExams=new ArrayList<>();
+
+                List<AerialExam> aerExams = new ArrayList<>();
                 aerExams.add(aerEx1);
                 aerExams.add(aerEx2);
                 aerExams.add(aerEx3);
-                 aerExRepo.save(aerExams);
-                
+                aerExRepo.save(aerExams);
+
                 genEx1.setAerialExams(aerExams);
                 genExRepo.save(genEx1);
+
+                GeneralExam genEx2 = new GeneralExam();
+
+                genEx2.setDoctor(docRepo.findAll().get(1));
+                genEx2.setPatient(patRepo.findAll().get(1));
+                genEx2.setTaken(new Date());
+
+                AerialExam aerEx4 = new AerialExam();
+                aerEx4.setExamType(ExamTypeEnum.GENERAL_APPEARANCE);
+                aerEx4.setComments("Здоровий дядько");
+
+                AerialExam aerEx5 = new AerialExam();
+                aerEx5.setExamType(ExamTypeEnum.GENITALIA);
+                aerEx5.setComments("Норма");
+
+                AerialExam aerEx6 = new AerialExam();
+                aerEx6.setExamType(ExamTypeEnum.CARDIAC);
+                aerEx6.setComments("Шуми в сердці.");
+
+                List<AerialExam> aerExams2 = new ArrayList<>();
+                aerExams2.add(aerEx4);
+                aerExams2.add(aerEx5);
+                aerExams2.add(aerEx6);
+                aerExRepo.save(aerExams2);
+
+                genEx2.setAerialExams(aerExams2);
+                genExRepo.save(genEx2);
             }
 
         };
