@@ -68,7 +68,7 @@ public class GeneralExamsView extends VerticalLayout implements View {
 
         initMainUI();
         initEditorWindow();
-        bindListeners();
+        addListeners();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class GeneralExamsView extends VerticalLayout implements View {
         setSpacing(true);
     }
 
-    private void bindListeners() {
+    private void addListeners() {
         filter.addTextChangeListener(e -> listEntities(e.getText()));
 
         table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
