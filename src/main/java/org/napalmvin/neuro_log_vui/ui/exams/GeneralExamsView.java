@@ -21,7 +21,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -115,6 +115,7 @@ public class GeneralExamsView extends VerticalLayout implements View {
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> {
             GeneralExam genEx = new GeneralExam();
+            genEx.setTaken(GregorianCalendar.getInstance().getTime());
             editor.edit(genEx);
             UI.getCurrent().addWindow(popupWindow);
 

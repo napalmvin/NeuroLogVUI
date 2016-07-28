@@ -13,7 +13,7 @@ import org.napalmvin.neuro_log_vui.data.DoctorRepository;
 import org.napalmvin.neuro_log_vui.data.PatientRepository;
 import org.napalmvin.neuro_log_vui.entities.Doctor;
 import org.napalmvin.neuro_log_vui.entities.Patient;
-import org.napalmvin.neuro_log_vui.ui.doctor.PersonComponent;
+import org.napalmvin.neuro_log_vui.ui.person.PersonSelectionComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -44,13 +44,13 @@ public class AppFieldFactory extends DefaultFieldGroupFieldFactory {
     }
 
     private <T extends Object & Field> T createDoctorField(Class<?> type, Class<T> fieldType) {
-        PersonComponent<Doctor> ret = new PersonComponent<>(msg, repositoryDoctors, Doctor.class);
+        PersonSelectionComponent<Doctor> ret = new PersonSelectionComponent<>(msg, repositoryDoctors, Doctor.class);
 //        ret.setIConverter(new PersonToStringConverter<Doctor>(Doctor.class));
         return (T) ret;
     }
 
     private <T extends Object & Field> T createPatientField(Class<?> type, Class<T> fieldType) {
-        PersonComponent<Patient> ret = new PersonComponent<>(msg, repositoryPatients, Patient.class);
+        PersonSelectionComponent<Patient> ret = new PersonSelectionComponent<>(msg, repositoryPatients, Patient.class);
 //        ret.setConverter(new PersonToStringConverter<Patient>(Patient.class));
         return (T) ret;
     }

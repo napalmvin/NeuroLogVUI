@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.napalmvin.neuro_log_vui.ui.doctor;
+package org.napalmvin.neuro_log_vui.ui.person;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
@@ -26,7 +26,7 @@ import org.napalmvin.neuro_log_vui.ui.PersonToStringConverter;
  * @author LOL
  * @param <T>
  */
-public  class PersonComponent<T extends Person> extends CustomField<T> {
+public  class PersonSelectionComponent<T extends Person> extends CustomField<T> {
 
     private final Button button = new Button(FontAwesome.SEARCH);
     private boolean isReqired;
@@ -39,7 +39,7 @@ public  class PersonComponent<T extends Person> extends CustomField<T> {
     
     private PersonToStringConverter<T> conv;
 
-    public PersonComponent(ResourceBundle msg, PersonRepository<T> repo,Class<T>type) {
+    public PersonSelectionComponent(ResourceBundle msg, PersonRepository<T> repo,Class<T>type) {
         this.textField = new TextField();
         this.isReqired = false;
         this.msg = msg;

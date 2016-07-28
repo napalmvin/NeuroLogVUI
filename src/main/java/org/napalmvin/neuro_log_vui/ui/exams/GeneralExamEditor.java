@@ -1,6 +1,5 @@
 package org.napalmvin.neuro_log_vui.ui.exams;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -11,15 +10,16 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import org.napalmvin.neuro_log_vui.data.AerialExamRepository;
 import org.napalmvin.neuro_log_vui.data.GeneralExamRepository;
 import org.napalmvin.neuro_log_vui.entities.AerialExam;
@@ -133,20 +133,42 @@ public class GeneralExamEditor extends Panel {
     }
 
     public final void edit(GeneralExam genExam) {
+        this.generalExam = getExistantOrCreateExam(genExam);
+
+        BeanItem beanItem = getBeanItemAndAddAerialProperties(generalExam);
+
+        formLayout.removeAllComponents();
+        fieldGroup = new FieldGroup();
+
+        fieldGroup.setFieldFactory(appFieldFactory);
+        fieldGroup.setItemDataSource(beanItem);
+        createFieldGroupComponentsFromBeanItemSelectivly(fieldGroup, beanItem);
+
+        setupFields(fieldGroup);
+
+        formLayout.addComponents(fieldGroup.getFields().toArray(new Component[0]));
+
+        this.setVisible(true);
+
+        // A hack to ensure the whole fieldGroup is visible
+        save.focus();
+    }
+
+    private GeneralExam getExistantOrCreateExam(GeneralExam genExam) {
         final boolean persisted = genExam.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
-            this.generalExam = repoGenEx.findOne(genExam.getId());
+            return repoGenEx.findOne(genExam.getId());
 
         } else {
-            this.generalExam = genExam;
+            return genExam;
 
         }
+    }
+    
+     
 
-        // Bind customer properties to similarly named fields
-        // Could also use annotation or "manual binding" or programmatically
-        // moving values from fields to entities before saving
-//        bindFieldsUnbuffered = BeanFieldGroup.bindFieldsUnbuffered(genEx, this);
+    private BeanItem getBeanItemAndAddAerialProperties(GeneralExam generalExam) {
         BeanItem beanItem = new BeanItem(generalExam);
         for (ExamTypeEnum key : ExamTypeEnum.values()) {
             AerialExam aerEx = generalExam.getAerialExam(key);
@@ -159,36 +181,29 @@ public class GeneralExamEditor extends Panel {
             beanItem.addItemProperty(key.name(),
                     new MethodProperty<AerialExam>(aerEx, AerialExam.FieldsList.comments.name()));
         }
-        formLayout.removeAllComponents();
-        fieldGroup = new FieldGroup();
+        return beanItem;
+    }
 
-        fieldGroup.setFieldFactory(appFieldFactory);
-        fieldGroup.setItemDataSource(beanItem);
+    private void createFieldGroupComponentsFromBeanItemSelectivly(FieldGroup fieldGroup, BeanItem beanItem) {
         for (Object itemPropertyId : beanItem.getItemPropertyIds()) {
             try {
                 if (GeneralExam.AERIAL_EXAMS.equals(itemPropertyId)
                         || GeneralExam.ID.equals(itemPropertyId)) {
                     continue;
                 }
-                Field f = fieldGroup.buildAndBind(msg.getString(itemPropertyId.toString()),
+                fieldGroup.buildAndBind(msg.getString(itemPropertyId.toString()),
                         itemPropertyId);
-                if (itemPropertyId.equals(GeneralExam.DOCTOR)
-                        || itemPropertyId.equals(GeneralExam.PATIENT)) {
-                    f.setRequired(true);
-                }
-
-                formLayout.addComponent(f);
             } catch (Exception ex) {
                 LOG.error(Marker.ANY_NON_NULL_MARKER, "Error while binding :" + itemPropertyId, ex);
             }
         }
+    }
 
-//        setSizeFull();
-        this.setVisible(true);
-
-        // A hack to ensure the whole fieldGroup is visible
-        save.focus();
-        // Select all text in firstName field automatically
+    private void setupFields(FieldGroup fieldGroup) {
+        fieldGroup.getField(GeneralExam.DOCTOR).setRequired(true);
+        fieldGroup.getField(GeneralExam.PATIENT).setRequired(true);
+        
+        fieldGroup.getField(GeneralExam.TAKEN).setReadOnly(true);
     }
 
     public void setChangeHandler(ChangeHandler h) {
@@ -199,4 +214,5 @@ public class GeneralExamEditor extends Panel {
         cancel.addClickListener(e -> h.onChange());
     }
 
+   
 }

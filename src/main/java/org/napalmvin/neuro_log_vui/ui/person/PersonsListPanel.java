@@ -1,4 +1,4 @@
-package org.napalmvin.neuro_log_vui.ui.doctor;
+package org.napalmvin.neuro_log_vui.ui.person;
 
 import org.springframework.util.StringUtils;
 
