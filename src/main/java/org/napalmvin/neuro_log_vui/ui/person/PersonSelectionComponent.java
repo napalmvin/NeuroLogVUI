@@ -34,7 +34,7 @@ public  class PersonSelectionComponent<T extends Person> extends CustomField<T> 
     private final ResourceBundle msg;
     private T person;
     private final Window popupWindow;
-    private PersonsListPanel<T> personsList;
+    private PersonSelectionListPanel<T> personsList;
     private Class<T>type;
     
     private PersonToStringConverter<T> conv;
@@ -44,7 +44,7 @@ public  class PersonSelectionComponent<T extends Person> extends CustomField<T> 
         this.isReqired = false;
         this.msg = msg;
         this.type=type;
-        personsList = new PersonsListPanel<T>(repo, msg,type);
+        personsList = new PersonSelectionListPanel<T>(repo, msg,type);
 
         button.setCaption(msg.getString("find"));
         this.popupWindow = new Window();

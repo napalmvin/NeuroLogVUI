@@ -59,7 +59,7 @@ public class PatientsView extends VerticalLayout implements View {
 
         initMainUI();
         initEditorWindow();
-        bindListeners();
+        createAndAddListeners();
 
         // Initialize listing
     }
@@ -83,7 +83,7 @@ public class PatientsView extends VerticalLayout implements View {
     }
     // end::listCustomers[]
 
-    private void bindListeners() {
+    private void createAndAddListeners() {
         filter.addTextChangeListener(e -> listCustomers(e.getText()));
 
         grid.addSelectionListener(new SelectionEvent.SelectionListener() {

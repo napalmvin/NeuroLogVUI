@@ -13,18 +13,15 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.napalmvin.neuro_log_vui.TextConstants.FILTER_BY_LAST_NAME;
 import static org.napalmvin.neuro_log_vui.TextConstants.SELECT;
 import org.napalmvin.neuro_log_vui.data.PersonRepository;
 import org.napalmvin.neuro_log_vui.entities.Person;
 import org.napalmvin.neuro_log_vui.ui.SelectionHandler;
 import org.napalmvin.neuro_log_vui.ui.StringPathToImgConverter;
-import org.napalmvin.neuro_log_vui.ui.patient.PatientEditor;
 import org.slf4j.LoggerFactory;
 
-public class PersonsListPanel<T extends Person> extends VerticalLayout {
+public class PersonSelectionListPanel<T extends Person> extends VerticalLayout {
 
     private ResourceBundle msg;
 
@@ -38,9 +35,9 @@ public class PersonsListPanel<T extends Person> extends VerticalLayout {
     private final StringPathToImgConverter converter = new StringPathToImgConverter();
     private Class<T> type;
     
-     final static org.slf4j.Logger log = LoggerFactory.getLogger(PersonsListPanel.class);
+     final static org.slf4j.Logger log = LoggerFactory.getLogger(PersonSelectionListPanel.class);
 
-    public PersonsListPanel(PersonRepository<T> repo, ResourceBundle msg, Class<T> type) {
+    public PersonSelectionListPanel(PersonRepository<T> repo, ResourceBundle msg, Class<T> type) {
         this.setImmediate(true);
         this.type = type;
         this.msg = msg;

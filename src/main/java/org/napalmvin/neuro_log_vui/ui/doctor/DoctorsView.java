@@ -56,6 +56,7 @@ public class DoctorsView extends VerticalLayout implements View {
 
         addNewBtn.setId("new_doctor");
         this.popupWindow = new Window();
+        popupWindow.setId("popup_editor");
 
         initMainUI();
         initEditorWindow();
@@ -94,7 +95,7 @@ public class DoctorsView extends VerticalLayout implements View {
 //                editor.setVisible(false);
                     UI.getCurrent().removeWindow(popupWindow);
                 } else {
-                    editor.editDoctor((Doctor) grid.getSelectedRow());
+                    editor.edit((Doctor) grid.getSelectedRow());
                     UI.getCurrent().addWindow(popupWindow);
                 }
             }
@@ -103,7 +104,7 @@ public class DoctorsView extends VerticalLayout implements View {
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> {
             Doctor dr=new Doctor();
-            editor.editDoctor(dr);
+            editor.edit(dr);
             UI.getCurrent().addWindow(popupWindow);
 
         });

@@ -17,8 +17,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 import org.napalmvin.neuro_log_vui.data.AerialExamRepository;
 import org.napalmvin.neuro_log_vui.data.GeneralExamRepository;
@@ -31,16 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
-/**
- * A simple example to introduce building forms. As your real application is
- * probably much more complicated than this example, you could re-use this
- * fieldGroup in multiple places. This example component is only used in
- * VaadinUI.
- * <p>
- * In a real world application you'll most likely using a common super class for
- * all your forms - less code, better UX. See e.g. AbstractForm in Virin
- * (https://vaadin.com/addon/viritin).
- */
 @SpringComponent
 @UIScope
 public class GeneralExamEditor extends Panel {
