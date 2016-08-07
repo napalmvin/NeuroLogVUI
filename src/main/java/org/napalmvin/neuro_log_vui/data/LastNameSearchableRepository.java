@@ -6,10 +6,11 @@
 package org.napalmvin.neuro_log_vui.data;
 
 import java.util.List;
-import org.napalmvin.neuro_log_vui.entities.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-public interface PersonRepository<T extends Person> extends JpaRepository<T, Long> {
+@NoRepositoryBean
+public interface LastNameSearchableRepository<T> extends JpaRepository<T, Long> {
 
 	List<T> findByLastNameStartsWithIgnoreCase(String lastName);
 }

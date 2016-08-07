@@ -16,7 +16,7 @@ import org.metawidget.inspector.annotation.UiRequired;
 public class Doctor extends Person {
 
     @Transient public final static String QUALIFICATION = "qualification";
-    @Transient public final static String[] FIELD_LIST = {
+    @Transient private final  String[] FIELD_LIST = {
         ID,
         FIRST_NAME,
         MIDLLE_NAME,

@@ -17,9 +17,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
-import org.napalmvin.neuro_log_vui.data.PersonRepository;
 import org.napalmvin.neuro_log_vui.entities.Person;
 import org.napalmvin.neuro_log_vui.ui.PersonToStringConverter;
+import org.napalmvin.neuro_log_vui.data.LastNameSearchableRepository;
 
 /**
  *
@@ -39,7 +39,7 @@ public  class PersonSelectionComponent<T extends Person> extends CustomField<T> 
     
     private PersonToStringConverter<T> conv;
 
-    public PersonSelectionComponent(ResourceBundle msg, PersonRepository<T> repo,Class<T>type) {
+    public PersonSelectionComponent(ResourceBundle msg, LastNameSearchableRepository<T> repo,Class<T>type) {
         this.textField = new TextField();
         this.isReqired = false;
         this.msg = msg;

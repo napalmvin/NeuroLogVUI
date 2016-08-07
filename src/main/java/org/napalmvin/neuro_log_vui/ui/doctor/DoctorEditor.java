@@ -21,7 +21,7 @@ import org.napalmvin.neuro_log_vui.ui.person.PersonEditor;
  */
 @SpringComponent
 @UIScope
-public class DoctorEditor extends PersonEditor<Person> {
+public class DoctorEditor extends PersonEditor<Doctor> {
 
     TextField qualification;
 
@@ -33,7 +33,7 @@ public class DoctorEditor extends PersonEditor<Person> {
     }
 
     @Override
-    public void initSubComponents() {
+    public void createAndInitSubComponents() {
         qualification = new TextField(msg.getString(Doctor.QUALIFICATION));
     }
 

@@ -28,9 +28,11 @@ public class PatientEditor extends PersonEditor<Patient> {
     };
 
     @Override
-    public void initSubComponents() {
+    public void createAndInitSubComponents() {
         //Do nothing as PersonEditor has all that needed
     }
+    
+    
    
 
 }

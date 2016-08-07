@@ -5,6 +5,7 @@
  */
 package org.napalmvin.neuro_log_vui.entities;
 
+import org.napalmvin.neuro_log_vui.entities.interfaces.FieldListEntity;
 import java.util.Date;
 import org.napalmvin.neuro_log_vui.entities.enums.RaceEnum;
 import org.napalmvin.neuro_log_vui.entities.enums.GenderEnum;
@@ -22,7 +23,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public abstract class Person {
+public abstract class Person implements FieldListEntity{
 
     @Transient public static final String ID = "id";
     @Transient public static final String FIRST_NAME = "firstName";
@@ -32,7 +33,8 @@ public abstract class Person {
     @Transient public static final String GENDER = "gender";
     @Transient public static final String RACE = "race";
     @Transient public static final String PHOTO_NAME = "photoName";
-    @Transient public static final String[] FIELD_LIST = {
+    
+    @Transient private  final String[] FIELD_LIST = {
         ID,
         FIRST_NAME,
         MIDLLE_NAME,
@@ -137,4 +139,13 @@ public abstract class Person {
     public void setPhotoName(String photoName) {
         this.photoName = photoName;
     }
+
+    @Override
+    public String[] getFieldList() {
+        return FIELD_LIST;
+    }
+
+    
+    
+    
 }

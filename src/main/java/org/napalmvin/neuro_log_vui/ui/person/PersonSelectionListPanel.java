@@ -15,17 +15,17 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import java.util.ResourceBundle;
 import static org.napalmvin.neuro_log_vui.TextConstants.FILTER_BY_LAST_NAME;
 import static org.napalmvin.neuro_log_vui.TextConstants.SELECT;
-import org.napalmvin.neuro_log_vui.data.PersonRepository;
 import org.napalmvin.neuro_log_vui.entities.Person;
 import org.napalmvin.neuro_log_vui.ui.SelectionHandler;
 import org.napalmvin.neuro_log_vui.ui.StringPathToImgConverter;
 import org.slf4j.LoggerFactory;
+import org.napalmvin.neuro_log_vui.data.LastNameSearchableRepository;
 
 public class PersonSelectionListPanel<T extends Person> extends VerticalLayout {
 
     private ResourceBundle msg;
 
-    private final PersonRepository<T> repo;
+    private final LastNameSearchableRepository<T> repo;
 
     private final Grid grid;
     private final TextField filter;
@@ -37,7 +37,7 @@ public class PersonSelectionListPanel<T extends Person> extends VerticalLayout {
     
      final static org.slf4j.Logger log = LoggerFactory.getLogger(PersonSelectionListPanel.class);
 
-    public PersonSelectionListPanel(PersonRepository<T> repo, ResourceBundle msg, Class<T> type) {
+    public PersonSelectionListPanel(LastNameSearchableRepository<T> repo, ResourceBundle msg, Class<T> type) {
         this.setImmediate(true);
         this.type = type;
         this.msg = msg;
@@ -64,11 +64,11 @@ public class PersonSelectionListPanel<T extends Person> extends VerticalLayout {
 
         //Set localized header(column names)
         T instance = type.newInstance();
-        for (String key : instance.FIELD_LIST) {
+        for (String key : instance.getFieldList()) {
             grid.getDefaultHeaderRow().getCell(key).setText(msg.getString(key));
         }
 
-        grid.setColumns(instance.FIELD_LIST);
+        grid.setColumns(instance.getFieldList());
         Grid.Column photoClmn = grid.getColumn(instance.PHOTO_NAME);
         photoClmn.setWidthUndefined();
         photoClmn.setRenderer(imgRndrr, converter);

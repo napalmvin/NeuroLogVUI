@@ -13,4 +13,11 @@ public class TextConstants {
     public static String FILTER_BY_LAST_NAME="filter_by_last_name";
     public static String SELECT="select";
     
+    public static String SAVE="save";
+    public static String DELETE="delete";
+    public static String CANCEL="cancel";
+    
+     public static String NEW_DOCTOR="new_doctor";
+     public static String NEW_PATIENT="new_patient";
+    
 }
