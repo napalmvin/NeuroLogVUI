@@ -19,7 +19,6 @@ import javax.persistence.Lob;
 public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String path;
     @Lob
     private byte[] content;
