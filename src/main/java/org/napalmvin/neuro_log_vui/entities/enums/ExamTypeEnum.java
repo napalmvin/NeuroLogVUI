@@ -10,7 +10,9 @@ package org.napalmvin.neuro_log_vui.entities.enums;
  * @author LOL
  */
 public enum ExamTypeEnum {
-    GENERAL_APPEARANCE, HEAD, EYES, EARS, NOSE, THROAT, NECK,
+    GENERAL_APPEARANCE,
+    TEMPERATURE,PULSE,HEIGHT,WEIGHT,BREATH_RATE,SYSTOLIC_ARTERIAL_PRESSURE,DIASTOLIC_ARTERIAL_PRESSURE,
+    HEAD, EYES, EARS, NOSE, THROAT, NECK,
     CARDIAC, LUNGS, ABDOMEN, MUSKOSKELETAL, BACK, EXTREMITIES, 
     NEUROLOGICAL, SKIN,
     PSYCHIATRIC,
@@ -20,5 +22,11 @@ public enum ExamTypeEnum {
     //FEMALE
     BREASTS,
     PELVIC;
+
+//    private byte 
+//    private ExamTypeEnum(Field) {
+//    }
+    
+    
 
 }
